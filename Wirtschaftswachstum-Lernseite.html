@@ -1,0 +1,1634 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Wirtschaftswachstum verstehen | Lernfeld 13</title>
+    <meta
+      name="description"
+      content="Interaktive Lernseite zum Thema Wirtschaftswachstum: BIP, Wertschöpfung, nominal vs. real, Grenzen des BIP und ein Mini-Quiz."
+    />
+
+    <!-- Google Fonts: Space Grotesk (Display), IBM Plex Sans (Text), IBM Plex Mono (Zahlen) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+/* =========================================================================
+   Wirtschaftswachstum – Lernseite
+   Design-Tokens, Layout, Komponenten. Mobile-first.
+   ========================================================================= */
+
+:root {
+  /* Flächen & Text */
+  --bg: #eef1f6;
+  --surface: #ffffff;
+  --ink: #0e1a2b;
+  --muted: #5c6b82;
+  --line: #dde4ee;
+
+  /* Aktion / Akzent */
+  --accent: #2d5bff;
+  --accent-ink: #ffffff;
+
+  /* Bedeutungsfarben der 3 Berechnungsarten (durchgehend gleich) */
+  --entstehung: #e63946; /* Rot */
+  --verwendung: #f0a020; /* Amber */
+  --verteilung: #169b8c; /* Teal */
+
+  /* Feedback */
+  --correct: #169b8c;
+  --wrong: #e63946;
+
+  /* Schriften */
+  --font-display: "Space Grotesk", system-ui, sans-serif;
+  --font-text: "IBM Plex Sans", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  /* Form */
+  --radius: 16px;
+  --radius-sm: 10px;
+  --shadow: 0 1px 2px rgba(14, 26, 43, 0.04), 0 12px 30px rgba(14, 26, 43, 0.06);
+  --shadow-lift: 0 18px 44px rgba(14, 26, 43, 0.12);
+
+  --maxw: 880px;
+  --nav-h: 56px;
+}
+
+/* ----------------------------- Reset / Basis ---------------------------- */
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-text);
+  font-size: 17px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3 { font-family: var(--font-display); line-height: 1.15; letter-spacing: -0.01em; }
+
+.mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+
+a { color: var(--accent); }
+
+/* Sichtbarer Tastatur-Fokus auf allem Interaktiven */
+:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* Sprunglink */
+.skip-link {
+  position: absolute;
+  left: 12px;
+  top: -60px;
+  z-index: 100;
+  background: var(--ink);
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 999px;
+  text-decoration: none;
+  transition: top 0.2s ease;
+}
+.skip-link:focus { top: 12px; }
+
+/* ----------------------------- Navigation ------------------------------- */
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
+}
+.nav__inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  height: var(--nav-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 16px;
+}
+.nav__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--ink);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.nav__spark { width: 28px; height: 20px; flex: none; }
+.nav__spark polyline {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.nav__links {
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.nav__links::-webkit-scrollbar { display: none; }
+.nav__links a {
+  white-space: nowrap;
+  text-decoration: none;
+  color: var(--muted);
+  font-weight: 500;
+  font-size: 14px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  transition: background 0.18s ease, color 0.18s ease;
+}
+.nav__links a:hover { background: var(--bg); color: var(--ink); }
+.nav__links a.is-active { background: var(--accent); color: #fff; }
+
+/* Fortschrittsbalken */
+.progress { height: 3px; background: transparent; }
+.progress__bar {
+  display: block;
+  height: 100%;
+  width: 0%;
+  background: var(--accent);
+  transition: width 0.1s linear;
+}
+
+/* ----------------------------- Layout ----------------------------------- */
+.section {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 64px 20px;
+  border-top: 1px solid var(--line);
+  scroll-margin-top: 70px; /* Platz für die Sticky-Nav beim Anspringen */
+}
+.hero, .footer { scroll-margin-top: 70px; }
+.section__head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+.step {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent);
+  border: 1.5px solid var(--accent);
+  border-radius: 999px;
+  padding: 2px 10px;
+  flex: none;
+}
+.section h2 { font-size: clamp(1.5rem, 4.5vw, 2rem); margin: 0; }
+
+.text { color: var(--ink); margin: 0 0 16px; max-width: 62ch; }
+.text--muted { color: var(--muted); }
+.eyebrow {
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 12px;
+  color: var(--muted);
+  margin: 0 0 12px;
+}
+.hint-tap { color: var(--muted); font-size: 15px; margin: 22px 0 12px; }
+
+/* Formelblock */
+.formula {
+  font-family: var(--font-mono);
+  font-size: 15px;
+  background: var(--ink);
+  color: #eaf0ff;
+  padding: 14px 18px;
+  border-radius: var(--radius-sm);
+  margin: 0 0 18px;
+  overflow-x: auto;
+}
+
+.punchline {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.05rem;
+  margin: 22px 0 0;
+  padding-left: 14px;
+  border-left: 4px solid var(--accent);
+}
+
+/* ----------------------------- Buttons ---------------------------------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 0 22px;
+  border-radius: 999px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 16px;
+  text-decoration: none;
+  cursor: pointer;
+  border: 1.5px solid transparent;
+  transition: transform 0.15s ease, background 0.18s ease, box-shadow 0.18s ease;
+}
+.btn--primary { background: var(--accent); color: var(--accent-ink); box-shadow: var(--shadow); }
+.btn--primary:hover { transform: translateY(-2px); box-shadow: var(--shadow-lift); }
+.btn--primary:active { transform: translateY(0); }
+.btn--ghost { background: var(--surface); color: var(--ink); border-color: var(--line); }
+.btn--ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ----------------------------- Karten ----------------------------------- */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 22px;
+  box-shadow: var(--shadow);
+}
+.card__title { font-size: 1.05rem; margin: 0 0 16px; }
+
+/* ----------------------------- HERO ------------------------------------- */
+.hero {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 48px 20px 56px;
+}
+.hero__grid {
+  display: grid;
+  gap: 32px;
+  grid-template-columns: 1fr;
+  align-items: center;
+}
+.hero__title {
+  font-size: clamp(2rem, 7vw, 3.1rem);
+  margin: 0 0 18px;
+  letter-spacing: -0.02em;
+}
+.hero__title .accent { color: var(--accent); }
+.lead { font-size: 1.1rem; color: var(--muted); max-width: 52ch; margin: 0 0 28px; }
+
+/* Diagramm-Karte */
+.chartcard {
+  margin: 0;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 18px;
+  box-shadow: var(--shadow);
+}
+.chartcard__cap { font-size: 14px; color: var(--muted); margin-bottom: 6px; }
+.chartcard__cap strong { color: var(--ink); font-family: var(--font-display); }
+.chartcard__plot { width: 100%; }
+.chartcard__plot svg { width: 100%; height: auto; display: block; }
+.chartcard__hint { font-size: 12.5px; color: var(--muted); margin: 8px 2px 0; min-height: 1.2em; }
+
+/* Diagramm-Linien & Punkte */
+.chart-area { fill: url(#areaGrad); opacity: 0.9; }
+.chart-line {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.chart-grid { stroke: var(--line); stroke-width: 1; }
+.chart-axis { fill: var(--muted); font-family: var(--font-mono); font-size: 11px; }
+.chart-dot { fill: var(--surface); stroke: var(--accent); stroke-width: 2.5; cursor: pointer; }
+.chart-dot--corona { stroke: var(--wrong); fill: #fff; }
+.chart-dot.is-hot { fill: var(--accent); }
+.chart-anno {
+  fill: var(--wrong);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* Linie zeichnet sich beim Laden */
+.chart-line.is-draw {
+  stroke-dasharray: var(--len);
+  stroke-dashoffset: var(--len);
+  animation: draw 1.6s ease forwards;
+}
+@keyframes draw { to { stroke-dashoffset: 0; } }
+
+/* --------------------- 1) Wachstumsrechner ------------------------------ */
+.calc { margin-top: 8px; }
+.calc__row { display: grid; gap: 16px; grid-template-columns: 1fr 1fr; }
+.field { display: flex; flex-direction: column; gap: 6px; font-size: 14px; color: var(--muted); }
+.field input {
+  font-family: var(--font-mono);
+  font-size: 18px;
+  color: var(--ink);
+  background: var(--bg);
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  min-height: 48px;
+  width: 100%;
+}
+.field input:focus { border-color: var(--accent); outline: none; }
+/* Beispiel-Buttons (positiv / negativ) */
+.calc__examples {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 18px;
+}
+.calc__exlabel { font-size: 14px; color: var(--muted); margin-right: 2px; }
+.exbtn {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  background: var(--surface);
+  border: 1.5px solid var(--line);
+  border-radius: 999px;
+  padding: 8px 14px;
+  min-height: 40px;
+  cursor: pointer;
+  color: var(--ink);
+  transition: border-color 0.15s ease, background 0.15s ease, transform 0.12s ease;
+}
+.exbtn:hover { transform: translateY(-1px); }
+.exbtn--up:hover { border-color: var(--verteilung); background: rgba(22, 155, 140, 0.08); }
+.exbtn--down:hover { border-color: var(--wrong); background: rgba(230, 57, 70, 0.07); }
+
+.calc__out {
+  margin-top: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  padding: 14px 18px;
+}
+.calc__label { color: var(--muted); font-size: 14px; }
+.calc__value { font-family: var(--font-mono); font-size: 1.6rem; font-weight: 600; color: var(--accent); }
+.calc__value.is-neg { color: var(--wrong); }
+.calc__status { font-size: 14px; color: var(--muted); margin: 10px 2px 0; font-weight: 500; }
+.calc__status.is-up { color: var(--verteilung); }
+.calc__status.is-down { color: var(--wrong); }
+
+/* --------------------- 2) Wertschöpfungskette --------------------------- */
+/* Kette: mobil senkrecht (Nummer links), am Desktop waagerecht mit Pfeilen */
+.chain { display: flex; flex-direction: column; align-items: stretch; }
+.chain__step {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+  flex: 1;
+  min-height: 56px;
+  padding: 12px 16px;
+  background: var(--surface);
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius-sm);
+  font: inherit;
+  color: var(--ink);
+  cursor: pointer;
+  transition: border-color 0.18s ease, transform 0.15s ease, background 0.18s ease;
+}
+.chain__step:hover { border-color: var(--accent); }
+.chain__step.is-active { border-color: var(--accent); background: #f4f7ff; }
+.chain__num {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  color: #fff;
+  background: var(--accent);
+  width: 26px; height: 26px;
+  border-radius: 999px;
+  display: grid; place-items: center;
+  font-size: 13px;
+  flex: none;
+}
+.chain__name { font-family: var(--font-display); font-weight: 600; }
+.chain__sub { font-size: 14px; color: var(--muted); }
+.chain__arrow {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--muted);
+  padding: 4px 0;
+}
+.chain__arrow svg { transform: rotate(90deg); } /* mobil: Pfeil zeigt nach unten */
+
+@media (min-width: 720px) {
+  .chain { flex-direction: row; align-items: stretch; }
+  .chain__step {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    justify-content: flex-start;
+    gap: 8px;
+    padding: 18px 12px;
+  }
+  .chain__step:hover { transform: translateY(-3px); }
+  .chain__arrow { padding: 0 4px; }
+  .chain__arrow svg { transform: none; } /* Desktop: Pfeil zeigt nach rechts */
+}
+.chain__detail {
+  margin-top: 14px;
+  min-height: 0;
+}
+.detailbox {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--accent);
+  border-radius: var(--radius-sm);
+  padding: 16px 18px;
+}
+.detailbox h4 { margin: 0 0 10px; font-family: var(--font-display); }
+.detailbox dl { display: grid; grid-template-columns: 1fr auto; gap: 6px 16px; margin: 0; }
+.detailbox dt { color: var(--muted); font-size: 14px; }
+.detailbox dd { margin: 0; font-family: var(--font-mono); text-align: right; }
+.detailbox .ws { color: var(--verteilung); font-weight: 600; }
+.chain__sum {
+  margin-top: 14px;
+  background: var(--verteilung);
+  color: #fff;
+  border-radius: var(--radius-sm);
+  padding: 16px 18px;
+  font-family: var(--font-display);
+  font-weight: 600;
+}
+.chain__sum .mono { color: #fff; }
+
+/* --------------------- 3) Berechnungsarten ------------------------------ */
+.methods { display: grid; gap: 12px; }
+.method { border-radius: var(--radius); overflow: hidden; border: 1px solid var(--line); background: var(--surface); }
+.method__btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  text-align: left;
+  padding: 16px 18px;
+  min-height: 60px;
+  background: var(--surface);
+  border: none;
+  border-left: 5px solid var(--m-color, var(--accent));
+  font: inherit;
+  color: var(--ink);
+  cursor: pointer;
+}
+.method__btn:hover { background: var(--bg); }
+.method__tag {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #fff;
+  background: var(--m-color, var(--accent));
+  padding: 3px 9px;
+  border-radius: 999px;
+  flex: none;
+}
+.method__name { font-family: var(--font-display); font-weight: 600; flex: 1; }
+.method__sub { display: block; font-family: var(--font-text); font-weight: 400; font-size: 13px; color: var(--muted); }
+.method__chev { color: var(--muted); transition: transform 0.2s ease; flex: none; }
+.method.is-open .method__chev { transform: rotate(90deg); }
+.method__body { display: none; padding: 0 18px 18px; }
+.method.is-open .method__body { display: block; }
+.method__formula {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  line-height: 1.7;
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+}
+
+/* --------------------- 4) Nominal/Real Simulation ----------------------- */
+.sim__controls { display: grid; gap: 22px; margin-bottom: 24px; }
+.slider { display: block; }
+.slider__label { display: flex; justify-content: space-between; font-size: 15px; margin-bottom: 8px; }
+.slider__label b { color: var(--accent); }
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--line);
+  cursor: pointer;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 26px; height: 26px;
+  border-radius: 999px;
+  background: var(--accent);
+  border: 3px solid #fff;
+  box-shadow: var(--shadow);
+}
+input[type="range"]::-moz-range-thumb {
+  width: 26px; height: 26px;
+  border-radius: 999px;
+  background: var(--accent);
+  border: 3px solid #fff;
+  box-shadow: var(--shadow);
+}
+.bars { display: grid; gap: 16px; }
+.bar__head { display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 6px; }
+.bar__track { height: 26px; background: var(--bg); border-radius: 999px; overflow: hidden; }
+.bar__fill {
+  height: 100%;
+  width: 0%;
+  border-radius: 999px;
+  transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1), background 0.2s ease;
+}
+.bar__fill--nom { background: var(--muted); }
+.bar__fill--real { background: var(--verteilung); }
+.bar__fill.is-neg { background: var(--wrong); }
+.sim__note { font-size: 14px; color: var(--muted); margin: 22px 0 0; }
+
+/* --------------------- 5) Szenario-Karten ------------------------------- */
+.scenarios { display: grid; gap: 10px; grid-template-columns: 1fr; }
+.scenario {
+  text-align: left;
+  background: var(--surface);
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 16px 18px;
+  min-height: 56px;
+  font: inherit;
+  color: var(--ink);
+  cursor: pointer;
+  transition: border-color 0.18s ease, transform 0.15s ease;
+}
+.scenario:hover { border-color: var(--accent); transform: translateY(-2px); }
+.scenario__q { font-family: var(--font-display); font-weight: 600; display: flex; align-items: center; gap: 10px; }
+.scenario__icon { font-size: 20px; }
+.scenario__result { display: none; margin-top: 12px; }
+.scenario.is-open .scenario__result { display: block; }
+.tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+.tag {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+.tag--up { background: rgba(22, 155, 140, 0.14); color: var(--verteilung); }
+.tag--down { background: rgba(230, 57, 70, 0.12); color: var(--wrong); }
+.scenario__exp { font-size: 14.5px; color: var(--muted); margin: 0; }
+
+/* --------------------- 6) Quiz ------------------------------------------ */
+.quiz { display: grid; gap: 18px; }
+.q {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow);
+}
+.q__num { font-family: var(--font-mono); font-size: 13px; color: var(--muted); }
+.q__text { font-family: var(--font-display); font-weight: 600; font-size: 1.05rem; margin: 6px 0 16px; }
+.q__options { display: grid; gap: 10px; }
+.opt {
+  text-align: left;
+  background: var(--surface);
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 13px 16px;
+  min-height: 48px;
+  font: inherit;
+  color: var(--ink);
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.opt:hover:not(:disabled) { border-color: var(--accent); }
+.opt:disabled { cursor: default; }
+.opt.is-correct { border-color: var(--correct); background: rgba(22, 155, 140, 0.1); }
+.opt.is-wrong { border-color: var(--wrong); background: rgba(230, 57, 70, 0.08); }
+.opt__mark { font-weight: 700; margin-right: 8px; }
+.opt.is-correct .opt__mark { color: var(--correct); }
+.opt.is-wrong .opt__mark { color: var(--wrong); }
+.q__feedback {
+  display: none;
+  margin-top: 14px;
+  font-size: 14.5px;
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+}
+.q__feedback.show { display: block; }
+.q__feedback.ok { color: var(--correct); }
+.q__feedback.no { color: var(--ink); }
+.quiz__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 24px;
+  flex-wrap: wrap;
+}
+.quiz__score { font-family: var(--font-display); font-weight: 600; font-size: 1.1rem; margin: 0; }
+.quiz__score.is-done { color: var(--accent); }
+
+/* --------------------- 7) Glossar / Footer ------------------------------ */
+.footer {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 56px 20px 80px;
+  border-top: 1px solid var(--line);
+}
+.footer__title { font-size: 1.5rem; margin: 0 0 6px; }
+.chips { display: flex; flex-wrap: wrap; gap: 10px; margin: 16px 0; }
+.chip {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  background: var(--surface);
+  border: 1.5px solid var(--line);
+  border-radius: 999px;
+  padding: 9px 16px;
+  min-height: 44px;
+  cursor: pointer;
+  color: var(--ink);
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.chip:hover { border-color: var(--accent); }
+.chip.is-active { background: var(--accent); color: #fff; border-color: var(--accent); }
+.chips__def {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--accent);
+  border-radius: var(--radius-sm);
+  padding: 16px 18px;
+  margin-top: 4px;
+}
+.chips__def b { font-family: var(--font-display); }
+.footer__authors {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin: 36px 0 0;
+  padding-top: 26px;
+  border-top: 1px solid var(--line);
+}
+.footer__authors span { color: var(--accent); }
+.footer__meta { font-size: 13px; color: var(--muted); margin-top: 14px; }
+
+/* ----------------------------- Responsive ------------------------------- */
+@media (min-width: 760px) {
+  .hero__grid { grid-template-columns: 1.05fr 1fr; }
+  .scenarios { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 480px) {
+  body { font-size: 16px; }
+  .calc__row { grid-template-columns: 1fr; }
+  .nav__brand span { display: none; } /* auf sehr kleinen Screens nur das Logo */
+}
+
+/* ----------------------------- Reduced Motion --------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  .chart-line.is-draw { stroke-dashoffset: 0 !important; animation: none !important; }
+}
+
+  </style>
+  </head>
+  <body>
+    <!-- Tastatur-Sprunglink: erste Tab-Station, sonst unsichtbar -->
+    <a class="skip-link" href="#main">Zum Inhalt springen</a>
+
+    <!-- ===================== STICKY NAVIGATION ===================== -->
+    <header class="nav" id="nav">
+      <div class="nav__inner">
+        <a class="nav__brand" href="#hero">
+          <!-- Mini-Wachstumskurve als Logo-Motiv -->
+          <svg class="nav__spark" viewBox="0 0 28 20" aria-hidden="true">
+            <polyline points="2,17 9,12 14,14 20,5 26,2" />
+          </svg>
+          <span>Wirtschafts­wachstum</span>
+        </a>
+
+        <nav class="nav__links" aria-label="Abschnitte">
+          <a href="#was-ist">Grundlagen</a>
+          <a href="#wertschoepfung">Wertschöpfung</a>
+          <a href="#berechnungsarten">3 Wege</a>
+          <a href="#nominal-real">Nominal/Real</a>
+          <a href="#grenzen">Grenzen</a>
+          <a href="#quiz">Quiz</a>
+        </nav>
+      </div>
+      <!-- Fortschrittsbalken: wächst beim Scrollen mit -->
+      <div class="progress" role="presentation"><span class="progress__bar" id="progressBar"></span></div>
+    </header>
+
+    <main id="main">
+      <!-- ===================== 0) HERO ===================== -->
+      <section class="hero" id="hero">
+        <div class="hero__grid">
+          <div class="hero__intro">
+            <p class="eyebrow">Wirtschaftslehre · Lernfeld 13</p>
+            <h1 class="hero__title">
+              Wie misst man, ob es einer Wirtschaft <span class="accent">besser</span> geht?
+            </h1>
+            <p class="lead">
+              Steigende Zahlen, Wachstumsraten, „real" und „nominal" – klingt
+              trocken, ist aber halb so wild. Wir gehen das Schritt für Schritt
+              durch: kurz erklärt, sofort selbst ausprobiert.
+            </p>
+            <a class="btn btn--primary" href="#was-ist">Los geht's</a>
+          </div>
+
+          <!-- Signature: animierte Wachstumskurve (per JS gezeichnet) -->
+          <figure class="chartcard" aria-label="Entwicklung des nominalen Bruttoinlandsprodukts in Deutschland von 2009 bis 2021">
+            <figcaption class="chartcard__cap">
+              <strong>BIP Deutschland</strong> · nominal, in Mrd. €
+            </figcaption>
+            <div class="chartcard__plot" id="heroChart"></div>
+            <p class="chartcard__hint" id="heroChartHint">Bewege den Finger oder die Maus über die Linie.</p>
+          </figure>
+        </div>
+      </section>
+
+      <!-- ===================== 1) GRUNDLAGEN ===================== -->
+      <section class="section" id="was-ist">
+        <div class="section__head">
+          <span class="step">01</span>
+          <h2>Was ist Wirtschaftswachstum?</h2>
+        </div>
+        <p class="text">
+          Das <strong>Bruttoinlandsprodukt (BIP)</strong> ist die Summe aller
+          Sachgüter und Dienstleistungen, die in einer Periode in einer
+          Volkswirtschaft erzeugt und zu Preisen bewertet werden. Kurz: der Wert
+          von allem, was produziert wurde.
+        </p>
+        <p class="text">
+          <strong>Wirtschaftswachstum</strong> ist nichts anderes als die
+          Veränderung dieses BIP von einem Jahr zum nächsten.
+        </p>
+
+        <div class="formula">
+          Wachstumsrate = (Veränderung des BIP ÷ BIP des Vorjahres) × 100
+        </div>
+
+        <!-- INTERAKTION: Wachstumsraten-Rechner -->
+        <div class="card calc" aria-label="Wachstumsraten-Rechner">
+          <h3 class="card__title">Rechne selbst</h3>
+          <div class="calc__row">
+            <label class="field">
+              <span>BIP Vorjahr (Mrd. €)</span>
+              <input type="number" id="calcPrev" value="2074" inputmode="decimal" />
+            </label>
+            <label class="field">
+              <span>BIP aktuelles Jahr (Mrd. €)</span>
+              <input type="number" id="calcCurr" value="2110" inputmode="decimal" />
+            </label>
+          </div>
+          <!-- Echte Beispiele aus der BIP-Reihe oben: positiv und negativ -->
+          <div class="calc__examples">
+            <span class="calc__exlabel">Echte Beispiele:</span>
+            <button class="exbtn exbtn--up" type="button" data-prev="3368" data-curr="3473">
+              Aufschwung 2018 → 2019
+            </button>
+            <button class="exbtn exbtn--down" type="button" data-prev="3473" data-curr="3368">
+              Corona 2019 → 2020
+            </button>
+          </div>
+
+          <div class="calc__out">
+            <span class="calc__label">Wachstumsrate</span>
+            <span class="calc__value" id="calcResult" aria-live="polite">+1,7 %</span>
+          </div>
+          <p class="calc__status" id="calcStatus" aria-live="polite">Die Wirtschaft wächst.</p>
+        </div>
+      </section>
+
+      <!-- ===================== 2) WERTSCHÖPFUNG ===================== -->
+      <section class="section" id="wertschoepfung">
+        <div class="section__head">
+          <span class="step">02</span>
+          <h2>Wertschöpfung – wie entsteht Mehrwert?</h2>
+        </div>
+        <p class="text">
+          Auf jeder Stufe der Produktion wird etwas Wert hinzugefügt. Diesen
+          Mehrwert nennt man <strong>Wertschöpfung</strong>:
+        </p>
+        <div class="formula">Wertschöpfung = Leistung − Vorleistung</div>
+        <p class="text">
+          Die <strong>Leistung</strong> ist der Wert des Endprodukts, die
+          <strong>Vorleistung</strong> sind die eingekauften Güter und Dienste,
+          die dabei verbraucht werden. Beispiel Schreinerei: Umsatz aus Möbeln
+          minus Kosten fürs Holz.
+        </p>
+
+        <!-- INTERAKTION: anklickbare Wertschöpfungskette -->
+        <p class="hint-tap">Tippe auf eine Stufe der Kette:</p>
+        <div class="chain" id="chain"></div>
+        <div class="chain__detail" id="chainDetail" aria-live="polite"></div>
+        <div class="chain__sum" id="chainSum" hidden></div>
+      </section>
+
+      <!-- ===================== 3) DREI BERECHNUNGSARTEN ===================== -->
+      <section class="section" id="berechnungsarten">
+        <div class="section__head">
+          <span class="step">03</span>
+          <h2>Die drei Berechnungsarten</h2>
+        </div>
+        <p class="text">
+          Das BIP kann man auf <strong>drei verschiedenen Wegen</strong>
+          berechnen – und alle drei führen zum exakt gleichen Ergebnis. Tippe
+          die Karten an, um die jeweilige Rechnung zu sehen.
+        </p>
+
+        <!-- INTERAKTION: 3 aufklappbare Karten (per JS gefüllt) -->
+        <div class="methods" id="methods"></div>
+
+        <p class="punchline">Alle drei Wege ergeben dasselbe: das Bruttoinlandsprodukt.</p>
+      </section>
+
+      <!-- ===================== 4) NOMINAL VS. REAL ===================== -->
+      <section class="section" id="nominal-real">
+        <div class="section__head">
+          <span class="step">04</span>
+          <h2>Nominal vs. real</h2>
+        </div>
+        <p class="text">
+          Das <strong>nominale BIP</strong> wird zu den aktuellen Marktpreisen
+          gerechnet. Das <strong>reale BIP</strong> ist preisbereinigt, also zu
+          den Preisen eines festen Basisjahres.
+        </p>
+        <p class="text">
+          Beispiel Brot: Steigt der Preis von 3 € auf 3,50 €, steigt das
+          nominale BIP – obwohl kein einziges Brot mehr gebacken wurde. Das
+          reale BIP rechnet diese Preissteigerung heraus und ist deshalb
+          aussagekräftiger.
+        </p>
+
+        <!-- INTERAKTION: zwei Slider + Balkenvergleich -->
+        <div class="card sim" aria-label="Simulation nominales und reales Wachstum">
+          <div class="sim__controls">
+            <label class="slider">
+              <span class="slider__label">
+                Nominales Wachstum <b id="nomVal" class="mono">9 %</b>
+              </span>
+              <input type="range" id="nomSlider" min="0" max="12" step="0.5" value="9" />
+            </label>
+            <label class="slider">
+              <span class="slider__label">
+                Inflation / Preissteigerung <b id="infVal" class="mono">4 %</b>
+              </span>
+              <input type="range" id="infSlider" min="0" max="10" step="0.5" value="4" />
+            </label>
+          </div>
+
+          <div class="bars">
+            <div class="bar">
+              <div class="bar__head"><span>Nominal</span><b class="mono" id="barNomLabel">9 %</b></div>
+              <div class="bar__track"><div class="bar__fill bar__fill--nom" id="barNom"></div></div>
+            </div>
+            <div class="bar">
+              <div class="bar__head"><span>Real</span><b class="mono" id="barRealLabel">5 %</b></div>
+              <div class="bar__track"><div class="bar__fill bar__fill--real" id="barReal"></div></div>
+            </div>
+          </div>
+
+          <p class="sim__note">
+            Faustregel: <span class="mono">real ≈ nominal − Inflation</span>.
+            Exakt wäre <span class="mono">(1 + nominal) ÷ (1 + Inflation) − 1</span>
+            – das Ergebnis liegt ganz nah dran.
+          </p>
+        </div>
+      </section>
+
+      <!-- ===================== 5) GRENZEN DES BIP ===================== -->
+      <section class="section" id="grenzen">
+        <div class="section__head">
+          <span class="step">05</span>
+          <h2>Grenzen des BIP – misst es Wohlstand?</h2>
+        </div>
+        <p class="text">
+          Man unterscheidet <strong>quantitatives</strong> Wachstum (einfach
+          „mehr") und <strong>qualitatives</strong> Wachstum („besser"). Das BIP
+          misst die Wirtschaftsleistung – aber nicht automatisch, ob es den
+          Menschen gut geht.
+        </p>
+        <p class="text">
+          Klingt komisch? Ein Autounfall lässt das BIP steigen (Reparatur, Arzt,
+          Versicherung, Abschleppdienst), obwohl es allen Beteiligten schlechter
+          geht. Hausarbeit und Ehrenamt zählen dagegen gar nicht ins BIP.
+        </p>
+
+        <!-- INTERAKTION: Szenario-Karten "Gut fürs BIP?" -->
+        <p class="hint-tap">Gut fürs BIP? Tippe ein Szenario an:</p>
+        <div class="scenarios" id="scenarios"></div>
+      </section>
+
+      <!-- ===================== 6) MINI-QUIZ ===================== -->
+      <section class="section" id="quiz">
+        <div class="section__head">
+          <span class="step">06</span>
+          <h2>Mini-Quiz</h2>
+        </div>
+        <p class="text">
+          Sechs kurze Fragen, sofortiges Feedback. Mal sehen, was hängen
+          geblieben ist.
+        </p>
+
+        <div class="quiz" id="quizList"></div>
+
+        <div class="quiz__bar">
+          <p class="quiz__score" id="quizScore" aria-live="polite">0 von 6 richtig</p>
+          <button class="btn btn--ghost" id="quizReset" type="button">Nochmal</button>
+        </div>
+      </section>
+    </main>
+
+    <!-- ===================== 7) GLOSSAR (FOOTER) ===================== -->
+    <footer class="footer" id="glossar">
+      <h2 class="footer__title">Glossar</h2>
+      <p class="text text--muted">Tippe einen Begriff an:</p>
+      <div class="chips" id="chips"></div>
+      <div class="chips__def" id="chipDef" aria-live="polite" hidden></div>
+
+      <p class="footer__authors">
+        Erstellt von <span>Tarik</span>, <span>Jona</span>, <span>Prabhdip</span> &amp; <span>Ferhat</span>
+      </p>
+      <p class="footer__meta">
+        Lernseite Wirtschaftswachstum · Wirtschaftslehre, Lernfeld 13 ·
+        Daten: nominales BIP Deutschland, Statistisches Bundesamt.
+      </p>
+    </footer>
+
+    <script>
+/* =========================================================================
+   Wirtschaftswachstum – Lernseite
+   Alle Interaktionen. Kein Framework, kein Build, kein localStorage.
+   Zustand lebt nur im Speicher (Variablen), ist also nach Reload weg.
+   ========================================================================= */
+
+(function () {
+  "use strict";
+
+  // Kleine Helfer ----------------------------------------------------------
+  const $ = (sel, root = document) => root.querySelector(sel);
+  const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // Deutsche Prozentanzeige, z. B. 1.7358 -> "+1,7 %"
+  function pct(value, withSign = true) {
+    const rounded = Math.round(value * 10) / 10;
+    const sign = withSign && rounded > 0 ? "+" : "";
+    return sign + rounded.toFixed(1).replace(".", ",") + " %";
+  }
+
+  /* =======================================================================
+     NAVIGATION: Fortschrittsbalken + aktiver Link
+     ===================================================================== */
+  function initNav() {
+    const bar = $("#progressBar");
+    const links = $$(".nav__links a");
+
+    // Fortschrittsbalken beim Scrollen (passiver Listener, nur Breite ändern)
+    function onScroll() {
+      const h = document.documentElement;
+      const max = h.scrollHeight - h.clientHeight;
+      const ratio = max > 0 ? h.scrollTop / max : 0;
+      bar.style.width = (ratio * 100).toFixed(1) + "%";
+    }
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+
+    // Aktiven Abschnitt im Menü markieren (IntersectionObserver)
+    const map = new Map();
+    links.forEach((a) => {
+      const target = document.querySelector(a.getAttribute("href"));
+      if (target) map.set(target, a);
+    });
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            links.forEach((l) => l.classList.remove("is-active"));
+            const link = map.get(e.target);
+            if (link) link.classList.add("is-active");
+          }
+        });
+      },
+      { rootMargin: "-45% 0px -50% 0px" }
+    );
+    map.forEach((_, section) => io.observe(section));
+  }
+
+  /* =======================================================================
+     0) HERO: animierte Wachstumskurve (BIP nominal, Mrd. €)
+     ===================================================================== */
+  function initHeroChart() {
+    const host = $("#heroChart");
+    const hint = $("#heroChartHint");
+    if (!host) return;
+
+    const data = [
+      [2009, 2446], [2010, 2564], [2011, 2694], [2012, 2745],
+      [2013, 2811], [2014, 2927], [2015, 3026], [2016, 3135],
+      [2017, 3267], [2018, 3368], [2019, 3473], [2020, 3368],
+      [2021, 3571],
+    ];
+
+    // Zeichenfläche
+    const W = 720, H = 360;
+    const padL = 46, padR = 16, padT = 24, padB = 30;
+    const plotW = W - padL - padR;
+    const plotH = H - padT - padB;
+    const yMin = 2300, yMax = 3650;
+    const n = data.length;
+
+    const x = (i) => padL + (i / (n - 1)) * plotW;
+    const y = (v) => padT + (1 - (v - yMin) / (yMax - yMin)) * plotH;
+
+    // Pfade aufbauen
+    const linePts = data.map((d, i) => `${x(i).toFixed(1)},${y(d[1]).toFixed(1)}`);
+    const lineD = "M" + linePts.join(" L");
+    const areaD =
+      `M${x(0)},${y(yMin)} L` + linePts.join(" L") + ` L${x(n - 1)},${y(yMin)} Z`;
+
+    // Y-Gitterlinien
+    let grid = "";
+    [2400, 2800, 3200, 3600].forEach((v) => {
+      const yy = y(v).toFixed(1);
+      grid += `<line class="chart-grid" x1="${padL}" y1="${yy}" x2="${W - padR}" y2="${yy}"/>`;
+      grid += `<text class="chart-axis" x="${padL - 8}" y="${(+yy + 4).toFixed(1)}" text-anchor="end">${v}</text>`;
+    });
+
+    // X-Jahre (nur jedes zweite, sonst zu eng auf dem Handy)
+    let xaxis = "";
+    data.forEach((d, i) => {
+      if (i % 2 === 0 || i === n - 1) {
+        xaxis += `<text class="chart-axis" x="${x(i).toFixed(1)}" y="${H - 8}" text-anchor="middle">${d[0]}</text>`;
+      }
+    });
+
+    // Datenpunkte (Corona-Jahr 2020 hervorgehoben)
+    let dots = "";
+    data.forEach((d, i) => {
+      const corona = d[0] === 2020;
+      dots += `<circle class="chart-dot${corona ? " chart-dot--corona" : ""}"
+        cx="${x(i).toFixed(1)}" cy="${y(d[1]).toFixed(1)}" r="5"
+        data-year="${d[0]}" data-val="${d[1]}"></circle>`;
+    });
+
+    // Corona-Anmerkung
+    const ci = data.findIndex((d) => d[0] === 2020);
+    const anno = `<text class="chart-anno" x="${x(ci).toFixed(1)}" y="${(y(3368) + 22).toFixed(1)}" text-anchor="middle">Corona</text>`;
+
+    host.innerHTML = `
+      <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Liniendiagramm des nominalen BIP von 2009 bis 2021, mit einem Rückgang 2020 durch Corona.">
+        <defs>
+          <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#2d5bff" stop-opacity="0.18"/>
+            <stop offset="100%" stop-color="#2d5bff" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+        ${grid}
+        <path class="chart-area" d="${areaD}"/>
+        <path class="chart-line" d="${lineD}"/>
+        ${dots}
+        ${anno}
+        ${xaxis}
+      </svg>`;
+
+    // Linie beim Laden zeichnen lassen
+    const line = $(".chart-line", host);
+    if (line && !reduceMotion) {
+      const len = line.getTotalLength();
+      line.style.setProperty("--len", len);
+      line.classList.add("is-draw");
+    }
+
+    // Werte beim Überfahren/Antippen der Punkte zeigen
+    $$(".chart-dot", host).forEach((dot) => {
+      const show = () => {
+        $$(".chart-dot", host).forEach((d) => d.classList.remove("is-hot"));
+        dot.classList.add("is-hot");
+        const yr = dot.getAttribute("data-year");
+        const val = dot.getAttribute("data-val");
+        hint.textContent = `${yr}: ${val} Mrd. € ${yr === "2020" ? "· Corona-Rückgang" : ""}`;
+      };
+      dot.addEventListener("pointerenter", show);
+      dot.addEventListener("pointerdown", show);
+    });
+  }
+
+  /* =======================================================================
+     1) Wachstumsraten-Rechner
+     ===================================================================== */
+  function initCalc() {
+    const prev = $("#calcPrev");
+    const curr = $("#calcCurr");
+    const out = $("#calcResult");
+    const status = $("#calcStatus");
+    if (!prev || !curr || !out) return;
+
+    function update() {
+      const p = parseFloat(prev.value);
+      const c = parseFloat(curr.value);
+      if (!isFinite(p) || !isFinite(c) || p === 0) {
+        out.textContent = "–";
+        out.classList.remove("is-neg");
+        if (status) { status.textContent = "Bitte beide Werte eingeben."; status.className = "calc__status"; }
+        return;
+      }
+      const rate = ((c - p) / p) * 100;
+      out.textContent = pct(rate);
+      out.classList.toggle("is-neg", rate < 0);
+
+      // Klartext: wächst, schrumpft oder unverändert
+      if (status) {
+        if (rate > 0.05) { status.textContent = "Die Wirtschaft wächst."; status.className = "calc__status is-up"; }
+        else if (rate < -0.05) { status.textContent = "Die Wirtschaft schrumpft (Rezession)."; status.className = "calc__status is-down"; }
+        else { status.textContent = "Praktisch keine Veränderung."; status.className = "calc__status"; }
+      }
+    }
+
+    prev.addEventListener("input", update);
+    curr.addEventListener("input", update);
+
+    // Beispiel-Buttons füllen die Felder mit echten BIP-Zahlen
+    $$(".exbtn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        prev.value = btn.dataset.prev;
+        curr.value = btn.dataset.curr;
+        update();
+      });
+    });
+
+    update();
+  }
+
+  /* =======================================================================
+     2) Wertschöpfungskette
+     ===================================================================== */
+  function initChain() {
+    const wrap = $("#chain");
+    const detail = $("#chainDetail");
+    const sumBox = $("#chainSum");
+    if (!wrap) return;
+
+    const steps = [
+      { name: "Forstbetrieb", sub: "verkauft Holz", vor: 0, preis: 60, ws: 60 },
+      { name: "Sägewerk", sub: "sägt Bretter", vor: 60, preis: 100, ws: 40 },
+      { name: "Möbelhersteller", sub: "baut den Schreibtisch", vor: 100, preis: 220, ws: 120 },
+      { name: "Möbelgeschäft", sub: "verkauft an Kundschaft", vor: 220, preis: 300, ws: 80 },
+    ];
+    const visited = new Set();
+
+    // Stufen + Pfeil-Verbinder rendern (echte Kette statt Liste)
+    const arrow = `<span class="chain__arrow" aria-hidden="true">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+    </span>`;
+    wrap.innerHTML = steps
+      .map(
+        (s, i) => `
+        <button class="chain__step" type="button" data-i="${i}">
+          <span class="chain__num">${i + 1}</span>
+          <span class="chain__name">${s.name}</span>
+          <span class="chain__sub">${s.sub}</span>
+        </button>`
+      )
+      .join(arrow);
+
+    function select(i) {
+      const s = steps[i];
+      $$(".chain__step", wrap).forEach((b) =>
+        b.classList.toggle("is-active", +b.dataset.i === i)
+      );
+      detail.innerHTML = `
+        <div class="detailbox">
+          <h4>${s.name}</h4>
+          <dl>
+            <dt>Vorleistung (eingekauft)</dt><dd>${s.vor} €</dd>
+            <dt>Verkaufspreis (Leistung)</dt><dd>${s.preis} €</dd>
+            <dt class="ws">Wertschöpfung = Leistung − Vorleistung</dt>
+            <dd class="ws">${s.preis} − ${s.vor} = ${s.ws} €</dd>
+          </dl>
+        </div>`;
+      visited.add(i);
+      // Pointe einblenden, sobald alle Stufen einmal angesehen wurden
+      if (visited.size === steps.length) {
+        sumBox.hidden = false;
+        sumBox.innerHTML =
+          `Summe aller Wertschöpfungen: <span class="mono">60 + 40 + 120 + 80 = 300 €</span> – genau der Endpreis. Doppelt zählen ausgeschlossen.`;
+      }
+    }
+
+    $$(".chain__step", wrap).forEach((b) =>
+      b.addEventListener("click", () => select(+b.dataset.i))
+    );
+  }
+
+  /* =======================================================================
+     3) Drei Berechnungsarten (Akkordeon)
+     ===================================================================== */
+  function initMethods() {
+    const wrap = $("#methods");
+    if (!wrap) return;
+
+    const methods = [
+      {
+        tag: "Entstehung",
+        name: "Wo wird es erarbeitet?",
+        color: "var(--entstehung)",
+        formula: [
+          "Produktionswert",
+          "− Vorleistungen",
+          "= Bruttowertschöpfung",
+          "+ Gütersteuern",
+          "− Gütersubventionen",
+          "= Bruttoinlandsprodukt",
+        ],
+      },
+      {
+        tag: "Verwendung",
+        name: "Wofür wird es genutzt?",
+        color: "var(--verwendung)",
+        formula: [
+          "Private Konsumausgaben",
+          "+ Konsumausgaben des Staates",
+          "+ Investitionen",
+          "+ Exporte",
+          "− Importe",
+          "= Bruttoinlandsprodukt",
+        ],
+      },
+      {
+        tag: "Verteilung",
+        name: "Wie wird es verteilt?",
+        color: "var(--verteilung)",
+        formula: [
+          "Löhne und Gehälter",
+          "+ Unternehmens- und Vermögenseinkommen",
+          "+ indirekte Steuern",
+          "− Subventionen",
+          "+ Abschreibungen",
+          "− Saldo der Einkommen aus dem Ausland",
+          "= Bruttoinlandsprodukt",
+        ],
+      },
+    ];
+
+    wrap.innerHTML = methods
+      .map(
+        (m, i) => `
+        <div class="method" style="--m-color:${m.color}">
+          <button class="method__btn" type="button" aria-expanded="false" aria-controls="m-body-${i}">
+            <span class="method__tag">${m.tag}</span>
+            <span class="method__name">${m.name}</span>
+            <svg class="method__chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+          </button>
+          <div class="method__body" id="m-body-${i}">
+            <div class="method__formula">${m.formula.join("<br />")}</div>
+          </div>
+        </div>`
+      )
+      .join("");
+
+    $$(".method__btn", wrap).forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const method = btn.closest(".method");
+        const open = method.classList.toggle("is-open");
+        btn.setAttribute("aria-expanded", String(open));
+      });
+    });
+  }
+
+  /* =======================================================================
+     4) Nominal vs. real (Slider + Balken)
+     ===================================================================== */
+  function initSim() {
+    const nom = $("#nomSlider");
+    const inf = $("#infSlider");
+    if (!nom || !inf) return;
+
+    const nomVal = $("#nomVal");
+    const infVal = $("#infVal");
+    const barNom = $("#barNom");
+    const barReal = $("#barReal");
+    const barNomLabel = $("#barNomLabel");
+    const barRealLabel = $("#barRealLabel");
+    const MAX = 12; // Skala der Balken
+
+    function fmt(v) {
+      return (Math.round(v * 10) / 10).toFixed(1).replace(".", ",") + " %";
+    }
+
+    function update() {
+      const n = parseFloat(nom.value);
+      const i = parseFloat(inf.value);
+      const real = n - i; // Faustregel
+
+      nomVal.textContent = fmt(n);
+      infVal.textContent = fmt(i);
+
+      barNom.style.width = Math.max(0, (n / MAX) * 100) + "%";
+      barNomLabel.textContent = fmt(n);
+
+      barReal.style.width = Math.max(0, Math.min(100, (real / MAX) * 100)) + "%";
+      barReal.classList.toggle("is-neg", real < 0);
+      barRealLabel.textContent = fmt(real);
+    }
+    nom.addEventListener("input", update);
+    inf.addEventListener("input", update);
+    update();
+  }
+
+  /* =======================================================================
+     5) Szenario-Karten "Gut fürs BIP?"
+     ===================================================================== */
+  function initScenarios() {
+    const wrap = $("#scenarios");
+    if (!wrap) return;
+
+    // dir: "up" | "down" | "flat"
+    const data = [
+      { q: "Autounfall", bip: "up", well: "down",
+        exp: "Reparatur, Arzt, Versicherung und Abschleppdienst kosten Geld – das BIP steigt, obwohl es allen Beteiligten schlechter geht." },
+      { q: "Epidemie & Pharma-Umsatz", bip: "up", well: "down",
+        exp: "Es werden mehr Medikamente verkauft, das BIP steigt. Gesünder oder zufriedener ist dadurch aber niemand." },
+      { q: "Angehörige zuhause pflegen", bip: "flat", well: "up",
+        exp: "Unbezahlte Pflege taucht im BIP gar nicht auf – obwohl sie für die Menschen extrem wertvoll ist." },
+      { q: "Wegwerfprodukte / geplanter Verschleiß", bip: "up", well: "down",
+        exp: "Geht etwas schnell kaputt, wird mehr neu gekauft. Das BIP steigt – Ressourcen und Umwelt zahlen drauf." },
+      { q: "Mehr in Bildung investieren", bip: "up", well: "up",
+        exp: "Bildung kostet, also steigt das BIP – und langfristig profitieren alle. Das nennt man qualitatives Wachstum." },
+    ];
+
+    const tag = (label, dir) => {
+      const arrow = dir === "up" ? "↑" : dir === "down" ? "↓" : "–";
+      const cls = dir === "up" ? "tag--up" : dir === "down" ? "tag--down" : "tag";
+      const style = dir === "flat" ? ' style="background:var(--bg);color:var(--muted)"' : "";
+      return `<span class="tag ${cls}"${style}>${label} ${arrow}</span>`;
+    };
+
+    wrap.innerHTML = data
+      .map(
+        (s, i) => `
+        <button class="scenario" type="button" aria-expanded="false" aria-controls="sc-${i}">
+          <span class="scenario__q">${s.q}</span>
+          <span class="scenario__result" id="sc-${i}">
+            <span class="tags">${tag("BIP", s.bip)}${tag("Wohlstand", s.well)}</span>
+            <span class="scenario__exp">${s.exp}</span>
+          </span>
+        </button>`
+      )
+      .join("");
+
+    $$(".scenario", wrap).forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const open = btn.classList.toggle("is-open");
+        btn.setAttribute("aria-expanded", String(open));
+      });
+    });
+  }
+
+  /* =======================================================================
+     6) Mini-Quiz
+     ===================================================================== */
+  function initQuiz() {
+    const wrap = $("#quizList");
+    const scoreEl = $("#quizScore");
+    const resetBtn = $("#quizReset");
+    if (!wrap) return;
+
+    const questions = [
+      {
+        q: "Woran lässt sich Wirtschaftswachstum messen?",
+        options: [
+          "An der Veränderung des realen Bruttonationaleinkommens.",
+          "An der Höhe der Staatsverschuldung.",
+          "An der Zahl neu gegründeter Unternehmen.",
+          "Am nominalen BIP, ganz ohne Preisbereinigung.",
+        ],
+        correct: 0,
+        exp: "Real – weil die Preissteigerung herausgerechnet wird. Sonst misst man nur höhere Preise, nicht mehr Leistung.",
+      },
+      {
+        q: "Welches Ziel gehört zum Magischen Viereck?",
+        options: [
+          "Stetiges und angemessenes Wirtschaftswachstum.",
+          "Möglichst hohe Steuereinnahmen.",
+          "Eine gerechte Einkommensverteilung.",
+          "Eine niedrige Staatsverschuldung.",
+        ],
+        correct: 0,
+        exp: "Das Magische Viereck: Preisstabilität, hoher Beschäftigungsstand, außenwirtschaftliches Gleichgewicht und stetiges, angemessenes Wachstum.",
+      },
+      {
+        q: "Welche Aussage zum BIP stimmt?",
+        options: [
+          "Das BIP ist die Summe aller Güter und Dienstleistungen, die in einem Jahr in einer Volkswirtschaft erbracht werden – in Geldeinheiten.",
+          "Das BIP misst nur die exportierten Güter.",
+          "Das BIP zählt auch Hausarbeit und Ehrenamt mit.",
+          "Das BIP ist die Summe aller Ersparnisse der Haushalte.",
+        ],
+        correct: 0,
+        exp: "Genau: alles Produzierte, in Geld bewertet. Hausarbeit und Ehrenamt fehlen übrigens komplett.",
+      },
+      {
+        q: "Das BIP steigt um 9 %, das Preisniveau um 4 %. Wie hoch ist das reale Wachstum?",
+        options: ["ca. 5 %", "ca. 13 %", "ca. 9 %", "ca. 4 %"],
+        correct: 0,
+        exp: "Faustregel: real ≈ nominal − Inflation = 9 − 4 = 5 %.",
+      },
+      {
+        q: "Was erhöht das Bruttonationaleinkommen?",
+        options: [
+          "Ein inländischer Autohersteller produziert 10.000 PKW mehr als im Vorjahr.",
+          "Die Brotpreise steigen um 5 %.",
+          "Ein ausländischer Konzern produziert mehr in seinem Heimatland.",
+          "Der Staat erhöht die Mehrwertsteuer.",
+        ],
+        correct: 0,
+        exp: "Mehr echte Produktion durch Inländer erhöht das BNE. Reine Preissteigerungen zählen real nicht.",
+      },
+      {
+        q: "Wo liegt ein wirtschaftspolitischer Zielkonflikt vor?",
+        options: [
+          "Bei steigender Beschäftigung erhöht sich das Preisniveau.",
+          "Mehr Wachstum führt zu mehr Beschäftigung.",
+          "Stabile Preise und hohe Beschäftigung treten gemeinsam auf.",
+          "Sinkende Inflation senkt die Arbeitslosigkeit.",
+        ],
+        correct: 0,
+        exp: "Klassischer Konflikt: mehr Beschäftigung kann die Preise steigen lassen – Beschäftigung gegen Preisstabilität.",
+      },
+    ];
+
+    let score = 0;
+    let answered = 0;
+
+    // Optionen mischen, damit die richtige Antwort nicht immer an gleicher Stelle steht
+    function shuffle(arr) {
+      const a = arr.slice();
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function render() {
+      score = 0;
+      answered = 0;
+      updateScore();
+
+      wrap.innerHTML = questions
+        .map((q, qi) => {
+          const correctText = q.options[q.correct];
+          const opts = shuffle(q.options);
+          const buttons = opts
+            .map(
+              (text) =>
+                `<button class="opt" type="button" data-correct="${text === correctText}">
+                  <span class="opt__mark" aria-hidden="true"></span>${text}
+                </button>`
+            )
+            .join("");
+          return `
+            <div class="q" data-exp="${encodeURIComponent(q.exp)}">
+              <div class="q__num">Frage ${qi + 1} von ${questions.length}</div>
+              <p class="q__text">${q.q}</p>
+              <div class="q__options">${buttons}</div>
+              <p class="q__feedback" aria-live="polite"></p>
+            </div>`;
+        })
+        .join("");
+
+      // Klick-Logik pro Frage
+      $$(".q", wrap).forEach((qEl) => {
+        const fb = $(".q__feedback", qEl);
+        const exp = decodeURIComponent(qEl.dataset.exp);
+        $$(".opt", qEl).forEach((opt) => {
+          opt.addEventListener("click", () => {
+            if (qEl.dataset.done) return; // Frage schon beantwortet
+            qEl.dataset.done = "1";
+            const isCorrect = opt.dataset.correct === "true";
+
+            // alle Optionen sperren und markieren
+            $$(".opt", qEl).forEach((o) => {
+              o.disabled = true;
+              if (o.dataset.correct === "true") {
+                o.classList.add("is-correct");
+                $(".opt__mark", o).textContent = "✓ ";
+              }
+            });
+            if (!isCorrect) {
+              opt.classList.add("is-wrong");
+              $(".opt__mark", opt).textContent = "✗ ";
+            }
+
+            fb.textContent = (isCorrect ? "Richtig. " : "Nicht ganz. ") + exp;
+            fb.classList.add("show", isCorrect ? "ok" : "no");
+
+            if (isCorrect) score++;
+            answered++;
+            updateScore();
+          });
+        });
+      });
+    }
+
+    function updateScore() {
+      const total = questions.length;
+      if (answered < total) {
+        scoreEl.textContent = `${score} von ${total} richtig`;
+        scoreEl.classList.remove("is-done");
+        return;
+      }
+      // Alle Fragen beantwortet: motivierende Auswertung
+      let msg;
+      if (score === total) msg = "Perfekt – sitzt alles!";
+      else if (score >= 4) msg = "Stark, das meiste sitzt.";
+      else if (score >= 2) msg = "Solide Basis. Schau dir die Erklärungen oben nochmal an.";
+      else msg = "Kein Stress – geh die Abschnitte nochmal durch und probier es erneut.";
+      scoreEl.textContent = `${score} von ${total} richtig. ${msg}`;
+      scoreEl.classList.add("is-done");
+    }
+
+    resetBtn.addEventListener("click", () => {
+      render();
+      wrap.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
+    });
+
+    render();
+  }
+
+  /* =======================================================================
+     7) Glossar-Chips
+     ===================================================================== */
+  function initGlossary() {
+    const wrap = $("#chips");
+    const def = $("#chipDef");
+    if (!wrap) return;
+
+    const terms = [
+      { term: "BIP", def: "Bruttoinlandsprodukt: der Wert aller Güter und Dienstleistungen, die in einem Jahr im Inland erzeugt werden (Inlandskonzept)." },
+      { term: "BNE", def: "Bruttonationaleinkommen: der Wert aller Güter und Dienstleistungen, die von Inländern erzeugt werden – im In- und Ausland (Inländerkonzept). Früher: Bruttosozialprodukt." },
+      { term: "nominal", def: "Zu aktuellen Marktpreisen gerechnet. Preissteigerungen sind enthalten." },
+      { term: "real", def: "Preisbereinigt, zu den Preisen eines Basisjahres. Die Inflation ist herausgerechnet – deshalb aussagekräftiger." },
+      { term: "Wertschöpfung", def: "Leistung minus Vorleistung: der Mehrwert, der auf einer Produktionsstufe neu geschaffen wird." },
+      { term: "Vorleistung", def: "Eingekaufte Güter und Dienste, die im Produktionsprozess verbraucht werden." },
+      { term: "Magisches Viereck", def: "Vier gleichzeitig angestrebte Ziele der Wirtschaftspolitik: Preisstabilität, hoher Beschäftigungsstand, außenwirtschaftliches Gleichgewicht und stetiges, angemessenes Wachstum. Magisch heißt es, weil schwer alle zugleich erreichbar sind." },
+    ];
+
+    wrap.innerHTML = terms
+      .map((t, i) => `<button class="chip" type="button" data-i="${i}" aria-controls="chipDef">${t.term}</button>`)
+      .join("");
+
+    $$(".chip", wrap).forEach((chip) => {
+      chip.addEventListener("click", () => {
+        const i = +chip.dataset.i;
+        const active = chip.classList.contains("is-active");
+        $$(".chip", wrap).forEach((c) => c.classList.remove("is-active"));
+        if (active) {
+          def.hidden = true; // gleicher Chip nochmal -> zuklappen
+          return;
+        }
+        chip.classList.add("is-active");
+        def.hidden = false;
+        def.innerHTML = `<b>${terms[i].term}:</b> ${terms[i].def}`;
+      });
+    });
+  }
+
+  /* =======================================================================
+     Start
+     ===================================================================== */
+  initNav();
+  initHeroChart();
+  initCalc();
+  initChain();
+  initMethods();
+  initSim();
+  initScenarios();
+  initQuiz();
+  initGlossary();
+})();
+
+  </script>
+  </body>
+</html>

@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Wirtschaftswachstum verstehen | Lernfeld 13</title>
+    <meta
+      name="description"
+      content="Interaktive Lernseite zum Thema Wirtschaftswachstum: BIP, Wertschöpfung, nominal vs. real, Grenzen des BIP und ein Mini-Quiz."
+    />
+
+    <!-- Google Fonts: Space Grotesk (Display), IBM Plex Sans (Text), IBM Plex Mono (Zahlen) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- Tastatur-Sprunglink: erste Tab-Station, sonst unsichtbar -->
+    <a class="skip-link" href="#main">Zum Inhalt springen</a>
+
+    <!-- ===================== STICKY NAVIGATION ===================== -->
+    <header class="nav" id="nav">
+      <div class="nav__inner">
+        <a class="nav__brand" href="#hero">
+          <!-- Mini-Wachstumskurve als Logo-Motiv -->
+          <svg class="nav__spark" viewBox="0 0 28 20" aria-hidden="true">
+            <polyline points="2,17 9,12 14,14 20,5 26,2" />
+          </svg>
+          <span>Wirtschafts­wachstum</span>
+        </a>
+
+        <nav class="nav__links" aria-label="Abschnitte">
+          <a href="#was-ist">Grundlagen</a>
+          <a href="#wertschoepfung">Wertschöpfung</a>
+          <a href="#berechnungsarten">3 Wege</a>
+          <a href="#nominal-real">Nominal/Real</a>
+          <a href="#grenzen">Grenzen</a>
+          <a href="#quiz">Quiz</a>
+        </nav>
+      </div>
+      <!-- Fortschrittsbalken: wächst beim Scrollen mit -->
+      <div class="progress" role="presentation"><span class="progress__bar" id="progressBar"></span></div>
+    </header>
+
+    <main id="main">
+      <!-- ===================== 0) HERO ===================== -->
+      <section class="hero" id="hero">
+        <div class="hero__grid">
+          <div class="hero__intro">
+            <p class="eyebrow">Wirtschaftslehre · Lernfeld 13</p>
+            <h1 class="hero__title">
+              Wie misst man, ob es einer Wirtschaft <span class="accent">besser</span> geht?
+            </h1>
+            <p class="lead">
+              Steigende Zahlen, Wachstumsraten, „real" und „nominal" – klingt
+              trocken, ist aber halb so wild. Wir gehen das Schritt für Schritt
+              durch: kurz erklärt, sofort selbst ausprobiert.
+            </p>
+            <a class="btn btn--primary" href="#was-ist">Los geht's</a>
+          </div>
+
+          <!-- Signature: animierte Wachstumskurve (per JS gezeichnet) -->
+          <figure class="chartcard" aria-label="Entwicklung des nominalen Bruttoinlandsprodukts in Deutschland von 2009 bis 2021">
+            <figcaption class="chartcard__cap">
+              <strong>BIP Deutschland</strong> · nominal, in Mrd. €
+            </figcaption>
+            <div class="chartcard__plot" id="heroChart"></div>
+            <p class="chartcard__hint" id="heroChartHint">Bewege den Finger oder die Maus über die Linie.</p>
+          </figure>
+        </div>
+      </section>
+
+      <!-- ===================== 1) GRUNDLAGEN ===================== -->
+      <section class="section" id="was-ist">
+        <div class="section__head">
+          <span class="step">01</span>
+          <h2>Was ist Wirtschaftswachstum?</h2>
+        </div>
+        <p class="text">
+          Das <strong>Bruttoinlandsprodukt (BIP)</strong> ist die Summe aller
+          Sachgüter und Dienstleistungen, die in einer Periode in einer
+          Volkswirtschaft erzeugt und zu Preisen bewertet werden. Kurz: der Wert
+          von allem, was produziert wurde.
+        </p>
+        <p class="text">
+          <strong>Wirtschaftswachstum</strong> ist nichts anderes als die
+          Veränderung dieses BIP von einem Jahr zum nächsten.
+        </p>
+
+        <div class="formula">
+          Wachstumsrate = (Veränderung des BIP ÷ BIP des Vorjahres) × 100
+        </div>
+
+        <!-- INTERAKTION: Wachstumsraten-Rechner -->
+        <div class="card calc" aria-label="Wachstumsraten-Rechner">
+          <h3 class="card__title">Rechne selbst</h3>
+          <div class="calc__row">
+            <label class="field">
+              <span>BIP Vorjahr (Mrd. €)</span>
+              <input type="number" id="calcPrev" value="2074" inputmode="decimal" />
+            </label>
+            <label class="field">
+              <span>BIP aktuelles Jahr (Mrd. €)</span>
+              <input type="number" id="calcCurr" value="2110" inputmode="decimal" />
+            </label>
+          </div>
+          <!-- Echte Beispiele aus der BIP-Reihe oben: positiv und negativ -->
+          <div class="calc__examples">
+            <span class="calc__exlabel">Echte Beispiele:</span>
+            <button class="exbtn exbtn--up" type="button" data-prev="3368" data-curr="3473">
+              Aufschwung 2018 → 2019
+            </button>
+            <button class="exbtn exbtn--down" type="button" data-prev="3473" data-curr="3368">
+              Corona 2019 → 2020
+            </button>
+          </div>
+
+          <div class="calc__out">
+            <span class="calc__label">Wachstumsrate</span>
+            <span class="calc__value" id="calcResult" aria-live="polite">+1,7 %</span>
+          </div>
+          <p class="calc__status" id="calcStatus" aria-live="polite">Die Wirtschaft wächst.</p>
+        </div>
+      </section>
+
+      <!-- ===================== 2) WERTSCHÖPFUNG ===================== -->
+      <section class="section" id="wertschoepfung">
+        <div class="section__head">
+          <span class="step">02</span>
+          <h2>Wertschöpfung – wie entsteht Mehrwert?</h2>
+        </div>
+        <p class="text">
+          Auf jeder Stufe der Produktion wird etwas Wert hinzugefügt. Diesen
+          Mehrwert nennt man <strong>Wertschöpfung</strong>:
+        </p>
+        <div class="formula">Wertschöpfung = Leistung − Vorleistung</div>
+        <p class="text">
+          Die <strong>Leistung</strong> ist der Wert des Endprodukts, die
+          <strong>Vorleistung</strong> sind die eingekauften Güter und Dienste,
+          die dabei verbraucht werden. Beispiel Schreinerei: Umsatz aus Möbeln
+          minus Kosten fürs Holz.
+        </p>
+
+        <!-- INTERAKTION: anklickbare Wertschöpfungskette -->
+        <p class="hint-tap">Tippe auf eine Stufe der Kette:</p>
+        <div class="chain" id="chain"></div>
+        <div class="chain__detail" id="chainDetail" aria-live="polite"></div>
+        <div class="chain__sum" id="chainSum" hidden></div>
+      </section>
+
+      <!-- ===================== 3) DREI BERECHNUNGSARTEN ===================== -->
+      <section class="section" id="berechnungsarten">
+        <div class="section__head">
+          <span class="step">03</span>
+          <h2>Die drei Berechnungsarten</h2>
+        </div>
+        <p class="text">
+          Das BIP kann man auf <strong>drei verschiedenen Wegen</strong>
+          berechnen – und alle drei führen zum exakt gleichen Ergebnis. Tippe
+          die Karten an, um die jeweilige Rechnung zu sehen.
+        </p>
+
+        <!-- INTERAKTION: 3 aufklappbare Karten (per JS gefüllt) -->
+        <div class="methods" id="methods"></div>
+
+        <p class="punchline">Alle drei Wege ergeben dasselbe: das Bruttoinlandsprodukt.</p>
+      </section>
+
+      <!-- ===================== 4) NOMINAL VS. REAL ===================== -->
+      <section class="section" id="nominal-real">
+        <div class="section__head">
+          <span class="step">04</span>
+          <h2>Nominal vs. real</h2>
+        </div>
+        <p class="text">
+          Das <strong>nominale BIP</strong> wird zu den aktuellen Marktpreisen
+          gerechnet. Das <strong>reale BIP</strong> ist preisbereinigt, also zu
+          den Preisen eines festen Basisjahres.
+        </p>
+        <p class="text">
+          Beispiel Brot: Steigt der Preis von 3 € auf 3,50 €, steigt das
+          nominale BIP – obwohl kein einziges Brot mehr gebacken wurde. Das
+          reale BIP rechnet diese Preissteigerung heraus und ist deshalb
+          aussagekräftiger.
+        </p>
+
+        <!-- INTERAKTION: zwei Slider + Balkenvergleich -->
+        <div class="card sim" aria-label="Simulation nominales und reales Wachstum">
+          <div class="sim__controls">
+            <label class="slider">
+              <span class="slider__label">
+                Nominales Wachstum <b id="nomVal" class="mono">9 %</b>
+              </span>
+              <input type="range" id="nomSlider" min="0" max="12" step="0.5" value="9" />
+            </label>
+            <label class="slider">
+              <span class="slider__label">
+                Inflation / Preissteigerung <b id="infVal" class="mono">4 %</b>
+              </span>
+              <input type="range" id="infSlider" min="0" max="10" step="0.5" value="4" />
+            </label>
+          </div>
+
+          <div class="bars">
+            <div class="bar">
+              <div class="bar__head"><span>Nominal</span><b class="mono" id="barNomLabel">9 %</b></div>
+              <div class="bar__track"><div class="bar__fill bar__fill--nom" id="barNom"></div></div>
+            </div>
+            <div class="bar">
+              <div class="bar__head"><span>Real</span><b class="mono" id="barRealLabel">5 %</b></div>
+              <div class="bar__track"><div class="bar__fill bar__fill--real" id="barReal"></div></div>
+            </div>
+          </div>
+
+          <p class="sim__note">
+            Faustregel: <span class="mono">real ≈ nominal − Inflation</span>.
+            Exakt wäre <span class="mono">(1 + nominal) ÷ (1 + Inflation) − 1</span>
+            – das Ergebnis liegt ganz nah dran.
+          </p>
+        </div>
+      </section>
+
+      <!-- ===================== 5) GRENZEN DES BIP ===================== -->
+      <section class="section" id="grenzen">
+        <div class="section__head">
+          <span class="step">05</span>
+          <h2>Grenzen des BIP – misst es Wohlstand?</h2>
+        </div>
+        <p class="text">
+          Man unterscheidet <strong>quantitatives</strong> Wachstum (einfach
+          „mehr") und <strong>qualitatives</strong> Wachstum („besser"). Das BIP
+          misst die Wirtschaftsleistung – aber nicht automatisch, ob es den
+          Menschen gut geht.
+        </p>
+        <p class="text">
+          Klingt komisch? Ein Autounfall lässt das BIP steigen (Reparatur, Arzt,
+          Versicherung, Abschleppdienst), obwohl es allen Beteiligten schlechter
+          geht. Hausarbeit und Ehrenamt zählen dagegen gar nicht ins BIP.
+        </p>
+
+        <!-- INTERAKTION: Szenario-Karten "Gut fürs BIP?" -->
+        <p class="hint-tap">Gut fürs BIP? Tippe ein Szenario an:</p>
+        <div class="scenarios" id="scenarios"></div>
+      </section>
+
+      <!-- ===================== 6) MINI-QUIZ ===================== -->
+      <section class="section" id="quiz">
+        <div class="section__head">
+          <span class="step">06</span>
+          <h2>Mini-Quiz</h2>
+        </div>
+        <p class="text">
+          Sechs kurze Fragen, sofortiges Feedback. Mal sehen, was hängen
+          geblieben ist.
+        </p>
+
+        <div class="quiz" id="quizList"></div>
+
+        <div class="quiz__bar">
+          <p class="quiz__score" id="quizScore" aria-live="polite">0 von 6 richtig</p>
+          <button class="btn btn--ghost" id="quizReset" type="button">Nochmal</button>
+        </div>
+      </section>
+    </main>
+
+    <!-- ===================== 7) GLOSSAR (FOOTER) ===================== -->
+    <footer class="footer" id="glossar">
+      <h2 class="footer__title">Glossar</h2>
+      <p class="text text--muted">Tippe einen Begriff an:</p>
+      <div class="chips" id="chips"></div>
+      <div class="chips__def" id="chipDef" aria-live="polite" hidden></div>
+
+      <p class="footer__authors">
+        Erstellt von <span>Tarik</span>, <span>Jona</span>, <span>Prabhdip</span> &amp; <span>Ferhat</span>
+      </p>
+      <p class="footer__meta">
+        Lernseite Wirtschaftswachstum · Wirtschaftslehre, Lernfeld 13 ·
+        Daten: nominales BIP Deutschland, Statistisches Bundesamt.
+      </p>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
