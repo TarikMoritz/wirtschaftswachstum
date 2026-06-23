@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Lückentext-Challenge | Wirtschaftswachstum</title>
+    <meta
+      name="description"
+      content="Spielerischer Lückentext: Setze die Fachbegriffe rund um das Wirtschaftswachstum an die richtige Stelle."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- gemeinsames Design der Lernseite -->
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      /* Spiel-spezifische Stile */
+      .game {
+        max-width: 820px;
+        margin: 0 auto;
+        padding: 28px 20px 80px;
+      }
+      .game__head { padding: 24px 0 8px; }
+      .back {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 14px;
+        font-weight: 600;
+        text-decoration: none;
+        color: var(--muted);
+        margin-bottom: 18px;
+      }
+      .back:hover { color: var(--accent); }
+      .game h1 { font-size: clamp(1.8rem, 5vw, 2.6rem); margin: 0 0 10px; letter-spacing: -0.01em; }
+      .game__intro { color: var(--muted); font-size: 1.05rem; max-width: 56ch; margin: 0 0 26px; }
+      .game__intro b { color: var(--ink); }
+
+      /* Wortbank */
+      .bank {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 9px;
+        padding: 16px;
+        margin-bottom: 26px;
+        background: rgba(255, 255, 255, 0.92);
+        backdrop-filter: blur(8px);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+      }
+      .bank:empty::before {
+        content: "Alle Begriffe gesetzt. Jetzt auf „Prüfen" tippen.";
+        color: var(--muted);
+        font-size: 14px;
+      }
+      .word {
+        font-family: var(--font-mono);
+        font-size: 14px;
+        background: var(--surface);
+        border: 1.5px solid var(--line);
+        border-radius: 999px;
+        padding: 9px 15px;
+        min-height: 42px;
+        cursor: pointer;
+        color: var(--ink);
+        transition: border-color 0.15s ease, background 0.15s ease, transform 0.12s ease;
+      }
+      .word:hover { border-color: var(--accent); transform: translateY(-1px); }
+      .word.is-selected {
+        background: var(--accent);
+        color: #fff;
+        border-color: var(--accent);
+      }
+
+      /* Sätze mit Lücken */
+      .lines { display: grid; gap: 16px; }
+      .cloze {
+        display: flex;
+        gap: 12px;
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        padding: 16px 18px;
+        box-shadow: var(--shadow);
+        line-height: 1.9;
+      }
+      .cloze__n {
+        font-family: var(--font-mono);
+        font-weight: 600;
+        color: var(--accent);
+        flex: none;
+      }
+      .slot {
+        display: inline-block;
+        min-width: 116px;
+        text-align: center;
+        font-family: var(--font-mono);
+        font-size: 0.95em;
+        vertical-align: baseline;
+        border-bottom: 2px dashed var(--accent);
+        border-radius: 4px;
+        padding: 1px 8px;
+        margin: 0 2px;
+        cursor: pointer;
+        color: var(--muted);
+        background: #f4f7ff;
+        transition: background 0.15s ease, border-color 0.15s ease;
+      }
+      .slot:hover { background: #e7eeff; }
+      .slot.is-filled { color: var(--ink); border-bottom-style: solid; background: #eaf0ff; }
+      .slot.correct { color: var(--correct); border-color: var(--correct); background: rgba(22, 155, 140, 0.12); }
+      .slot.wrong { color: var(--wrong); border-color: var(--wrong); background: rgba(230, 57, 70, 0.1); }
+      .slot.empty-hint { border-color: var(--accent); }
+
+      /* Steuerleiste */
+      .game__bar {
+        position: sticky;
+        bottom: 0;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        flex-wrap: wrap;
+        margin-top: 26px;
+        padding: 14px 0;
+        background: linear-gradient(transparent, var(--bg) 30%);
+      }
+      .game__score {
+        font-family: var(--font-display);
+        font-weight: 600;
+        font-size: 1.05rem;
+        margin: 0;
+      }
+      .game__score.win { color: var(--correct); }
+
+      .gfoot { max-width: 820px; margin: 0 auto; padding: 0 20px 60px; }
+      .gfoot__authors { font-family: var(--font-display); font-weight: 600; }
+      .gfoot__authors span { color: var(--accent); }
+    </style>
+  </head>
+  <body>
+    <main class="game">
+      <div class="game__head">
+        <a class="back" href="index.html">← Zurück zur Lernseite</a>
+        <h1>Lückentext-Challenge</h1>
+        <p class="game__intro">
+          Zehn Sätze, zehn Fachbegriffe. <b>Tippe einen Begriff</b> in der
+          Wortbank an und dann die <b>passende Lücke</b>. Eine gefüllte Lücke
+          tippst du an, um den Begriff zurückzugeben.
+        </p>
+      </div>
+
+      <div class="bank" id="bank" aria-label="Wortbank"></div>
+      <div class="lines" id="lines"></div>
+
+      <div class="game__bar">
+        <button class="btn btn--primary" id="check" type="button">Prüfen</button>
+        <button class="btn btn--ghost" id="reset" type="button">Nochmal</button>
+        <p class="game__score" id="score" aria-live="polite"></p>
+      </div>
+    </main>
+
+    <footer class="gfoot">
+      <p class="gfoot__authors">
+        Erstellt von <span>Tarik</span>, <span>Jona</span>,
+        <span>Prabhdip</span> &amp; <span>Ferhat</span>
+      </p>
+    </footer>
+
+    <script>
+      // ---- Spiel-Daten: Satz (pre / Lücke / post) + richtiger Begriff ----
+      const SENTENCES = [
+        { pre: "Das ", answer: "Bruttoinlandsprodukt", post: " ist der Wert aller Güter und Dienstleistungen, die in einem Jahr im Inland erzeugt werden." },
+        { pre: "Leistung minus Vorleistung ergibt die ", answer: "Wertschöpfung", post: "." },
+        { pre: "Das von einem Schreiner eingekaufte Holz ist eine ", answer: "Vorleistung", post: "." },
+        { pre: "Zu aktuellen Marktpreisen gerechnet ist das ", answer: "nominale", post: " BIP." },
+        { pre: "Das reale BIP wird zu den Preisen eines festen ", answer: "Basisjahres", post: " berechnet." },
+        { pre: "Steigen nur die Preise, täuscht die ", answer: "Inflation", post: " ein höheres BIP vor." },
+        { pre: "Die ", answer: "Wachstumsrate", post: " zeigt die prozentuale Veränderung des BIP gegenüber dem Vorjahr." },
+        { pre: "Die Leistung der Inländer, auch im Ausland, misst das ", answer: "Bruttonationaleinkommen", post: "." },
+        { pre: "Konsum, Investitionen und der Außenbeitrag gehören zur ", answer: "Verwendungsrechnung", post: "." },
+        { pre: "Umweltschutz und gerechte Verteilung kommen beim Magischen ", answer: "Sechseck", post: " hinzu." },
+      ];
+
+      const bankEl = document.getElementById("bank");
+      const linesEl = document.getElementById("lines");
+      const scoreEl = document.getElementById("score");
+      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      let placed; // placed[i] = gesetzter Begriff oder null
+      let bank; // verbleibende Begriffe in der Wortbank
+      let selected; // aktuell gewählter Begriff aus der Bank
+
+      function shuffle(arr) {
+        const a = arr.slice();
+        for (let i = a.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+      }
+
+      function start() {
+        placed = new Array(SENTENCES.length).fill(null);
+        bank = shuffle(SENTENCES.map((s) => s.answer));
+        selected = null;
+        scoreEl.textContent = "";
+        scoreEl.classList.remove("win");
+        renderLines();
+        renderBank();
+      }
+
+      function renderBank() {
+        bankEl.innerHTML = bank
+          .map((term) => `<button class="word${term === selected ? " is-selected" : ""}" data-term="${term}" type="button">${term}</button>`)
+          .join("");
+      }
+
+      function renderLines() {
+        linesEl.innerHTML = SENTENCES.map((s, i) => {
+          const val = placed[i];
+          const label = val ? val : "_______";
+          const filled = val ? " is-filled" : "";
+          const hint = !val && selected ? " empty-hint" : "";
+          return `<p class="cloze">
+            <span class="cloze__n">${i + 1}</span>
+            <span>${s.pre}<button class="slot${filled}${hint}" data-i="${i}" type="button">${label}</button>${s.post}</span>
+          </p>`;
+        }).join("");
+      }
+
+      // Begriff in der Bank wählen / abwählen
+      bankEl.addEventListener("click", (e) => {
+        const btn = e.target.closest(".word");
+        if (!btn) return;
+        const term = btn.dataset.term;
+        selected = selected === term ? null : term;
+        renderBank();
+        renderLines();
+      });
+
+      // Lücke antippen: füllen oder Begriff zurückgeben
+      linesEl.addEventListener("click", (e) => {
+        const slot = e.target.closest(".slot");
+        if (!slot) return;
+        const i = +slot.dataset.i;
+        if (placed[i]) {
+          // gefüllte Lücke -> Begriff zurück in die Bank
+          bank.push(placed[i]);
+          placed[i] = null;
+        } else if (selected) {
+          // leere Lücke + gewählter Begriff -> einsetzen
+          placed[i] = selected;
+          bank = bank.filter((t) => t !== selected);
+          selected = null;
+        }
+        renderBank();
+        renderLines();
+      });
+
+      // Prüfen
+      document.getElementById("check").addEventListener("click", () => {
+        let correct = 0;
+        const slots = linesEl.querySelectorAll(".slot");
+        slots.forEach((slot) => {
+          const i = +slot.dataset.i;
+          slot.classList.remove("correct", "wrong", "empty-hint");
+          if (placed[i] === SENTENCES[i].answer) {
+            slot.classList.add("correct");
+            correct++;
+          } else if (placed[i]) {
+            slot.classList.add("wrong");
+          }
+        });
+        const total = SENTENCES.length;
+        let msg;
+        if (correct === total) msg = " – perfekt, alles richtig!";
+        else if (correct >= total * 0.7) msg = " – stark!";
+        else if (correct >= total * 0.4) msg = " – schon ganz gut.";
+        else msg = " – probier es nochmal.";
+        scoreEl.textContent = `${correct} von ${total} richtig${msg}`;
+        scoreEl.classList.toggle("win", correct === total);
+      });
+
+      document.getElementById("reset").addEventListener("click", () => {
+        start();
+        window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" });
+      });
+
+      start();
+    </script>
+  </body>
+</html>

@@ -657,6 +657,38 @@ input[type="range"]::-moz-range-thumb {
 .quiz__score { font-family: var(--font-display); font-weight: 600; font-size: 1.1rem; margin: 0; }
 .quiz__score.is-done { color: var(--accent); }
 
+/* --------------------- Aufruf zum Lückentext-Spiel ---------------------- */
+.gamecta {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  text-decoration: none;
+  background: var(--ink);
+  color: #fff;
+  border-radius: var(--radius);
+  padding: 22px 24px;
+  box-shadow: var(--shadow);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+.gamecta:hover { transform: translateY(-3px); box-shadow: var(--shadow-lift); }
+.gamecta__icon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: var(--accent);
+  color: #fff;
+}
+.gamecta__text { flex: 1; font-size: 15px; color: rgba(255, 255, 255, 0.75); line-height: 1.5; }
+.gamecta__text strong { display: block; font-family: var(--font-display); font-size: 1.2rem; color: #fff; margin-bottom: 2px; }
+.gamecta__cta { flex: none; font-family: var(--font-display); font-weight: 600; color: #fff; }
+@media (max-width: 560px) {
+  .gamecta { flex-wrap: wrap; }
+  .gamecta__cta { width: 100%; color: var(--accent-ink); background: var(--accent); border-radius: 999px; text-align: center; padding: 10px; margin-top: 4px; }
+}
+
 /* --------------------- 7) Glossar / Footer ------------------------------ */
 .footer {
   max-width: var(--maxw);

@@ -677,6 +677,38 @@ input[type="range"]::-moz-range-thumb {
 .quiz__score { font-family: var(--font-display); font-weight: 600; font-size: 1.1rem; margin: 0; }
 .quiz__score.is-done { color: var(--accent); }
 
+/* --------------------- Aufruf zum Lückentext-Spiel ---------------------- */
+.gamecta {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  text-decoration: none;
+  background: var(--ink);
+  color: #fff;
+  border-radius: var(--radius);
+  padding: 22px 24px;
+  box-shadow: var(--shadow);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+.gamecta:hover { transform: translateY(-3px); box-shadow: var(--shadow-lift); }
+.gamecta__icon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: var(--accent);
+  color: #fff;
+}
+.gamecta__text { flex: 1; font-size: 15px; color: rgba(255, 255, 255, 0.75); line-height: 1.5; }
+.gamecta__text strong { display: block; font-family: var(--font-display); font-size: 1.2rem; color: #fff; margin-bottom: 2px; }
+.gamecta__cta { flex: none; font-family: var(--font-display); font-weight: 600; color: #fff; }
+@media (max-width: 560px) {
+  .gamecta { flex-wrap: wrap; }
+  .gamecta__cta { width: 100%; color: var(--accent-ink); background: var(--accent); border-radius: 999px; text-align: center; padding: 10px; margin-top: 4px; }
+}
+
 /* --------------------- 7) Glossar / Footer ------------------------------ */
 .footer {
   max-width: var(--maxw);
@@ -994,9 +1026,23 @@ input[type="range"]::-moz-range-thumb {
         <div class="quiz" id="quizList"></div>
 
         <div class="quiz__bar">
-          <p class="quiz__score" id="quizScore" aria-live="polite">0 von 6 richtig</p>
+          <p class="quiz__score" id="quizScore" aria-live="polite">0 von 16 richtig</p>
           <button class="btn btn--ghost" id="quizReset" type="button">Nochmal</button>
         </div>
+      </section>
+
+      <!-- Aufruf zum Lückentext-Spiel (eigene Seite) -->
+      <section class="section">
+        <a class="gamecta" href="https://tarikmoritz.github.io/wirtschaftswachstum/lueckentext.html">
+          <span class="gamecta__icon" aria-hidden="true">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 12h4"/><path d="M8 10v4"/><path d="M15 11h.01"/><path d="M18 13h.01"/><rect width="20" height="12" x="2" y="6" rx="6"/></svg>
+          </span>
+          <span class="gamecta__text">
+            <strong>Lust auf ein Spiel?</strong>
+            Teste die Fachbegriffe spielerisch im Lückentext.
+          </span>
+          <span class="gamecta__cta">Challenge starten →</span>
+        </a>
       </section>
     </main>
 
