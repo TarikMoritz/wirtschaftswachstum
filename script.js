@@ -620,6 +620,28 @@
         correct: 0,
         exp: "Das Sechseck erweitert das Viereck um Umweltschutz und gerechte Verteilung.",
       },
+      {
+        q: "Wie kommt man vom BNE zum Nettonationaleinkommen (NNE)?",
+        options: [
+          "Man zieht die Abschreibungen ab.",
+          "Man addiert die Exporte.",
+          "Man zieht die Löhne ab.",
+          "Man addiert die Inflation.",
+        ],
+        correct: 0,
+        exp: "NNE = BNE − Abschreibungen (der Wertverlust von Maschinen und Gebäuden).",
+      },
+      {
+        q: "Was beschreibt das Volkseinkommen?",
+        options: [
+          "Was als Einkommen bei Arbeitnehmern und Unternehmen ankommt.",
+          "Den Wert aller Exporte eines Jahres.",
+          "Die gesamten Ausgaben des Staates.",
+          "Das BIP zu aktuellen Marktpreisen.",
+        ],
+        correct: 0,
+        exp: "Volkseinkommen = NNE − indirekte Steuern + Subventionen: die Einkommen aus Arbeit und Unternehmen.",
+      },
     ];
 
     let score = 0;
@@ -732,6 +754,8 @@
     const terms = [
       { term: "BIP", def: "Bruttoinlandsprodukt: der Wert aller Güter und Dienstleistungen, die in einem Jahr im Inland erzeugt werden (Inlandskonzept)." },
       { term: "BNE", def: "Bruttonationaleinkommen: der Wert aller Güter und Dienstleistungen, die von Inländern erzeugt werden – im In- und Ausland (Inländerkonzept). Früher: Bruttosozialprodukt." },
+      { term: "NNE", def: "Nettonationaleinkommen: das BNE abzüglich der Abschreibungen, also des Wertverlusts von Maschinen und Gebäuden." },
+      { term: "Volkseinkommen", def: "Was als Einkommen bei Arbeitnehmern (Löhne) und Unternehmen (Gewinne) ankommt: NNE minus indirekte Steuern plus Subventionen." },
       { term: "nominal", def: "Zu aktuellen Marktpreisen gerechnet. Preissteigerungen sind enthalten." },
       { term: "real", def: "Preisbereinigt, zu den Preisen eines Basisjahres. Die Inflation ist herausgerechnet – deshalb aussagekräftiger." },
       { term: "Wertschöpfung", def: "Leistung minus Vorleistung: der Mehrwert, der auf einer Produktionsstufe neu geschaffen wird." },

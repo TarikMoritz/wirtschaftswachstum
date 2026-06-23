@@ -549,6 +549,56 @@ a { color: var(--accent); }
 .calcrow.is-total dd { color: var(--m-color, var(--accent)); }
 .method__note { font-size: 12px; color: var(--muted); margin: 10px 2px 0; }
 
+/* --------------------- 4) BIP, BNE & weitere Größen --------------------- */
+.vs { display: grid; gap: 14px; margin-bottom: 10px; }
+.vs__card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-top: 4px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 22px;
+  box-shadow: var(--shadow);
+}
+.vs__tag {
+  display: inline-block;
+  font-family: var(--font-mono); font-weight: 600; font-size: 13px;
+  color: #fff; background: var(--accent);
+  padding: 3px 13px; border-radius: 999px;
+}
+.vs__card h3 { font-size: 1.15rem; margin: 12px 0 2px; }
+.vs__concept { font-family: var(--font-mono); font-size: 12.5px; color: var(--muted); margin: 0 0 12px; }
+.vs__desc { margin: 0 0 12px; }
+.vs__ex {
+  font-size: 14px; color: var(--muted); margin: 0;
+  background: var(--bg); border-radius: var(--radius-sm); padding: 11px 14px;
+}
+
+/* Einkommens-Treppe: BIP -> BNE -> NNE -> Volkseinkommen */
+.stairs { display: grid; gap: 0; }
+.stair {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--accent);
+  border-radius: var(--radius-sm);
+  padding: 14px 18px;
+}
+.stair__name { font-family: var(--font-display); font-weight: 600; margin: 0; }
+.stair__name b { color: var(--accent); margin-right: 8px; }
+.stair__desc { font-size: 14px; color: var(--muted); margin: 4px 0 0; }
+.stair__op {
+  font-family: var(--font-mono); font-size: 13px; color: var(--muted);
+  text-align: center; padding: 9px 0; margin: 0;
+}
+.stair__op::before { content: "↓  "; color: var(--accent); font-weight: 700; }
+.stair--goal { background: var(--ink); border-color: var(--ink); }
+.stair--goal .stair__name,
+.stair--goal .stair__name b { color: #fff; }
+.stair--goal .stair__desc { color: rgba(255, 255, 255, 0.75); }
+
+@media (min-width: 640px) {
+  .vs { grid-template-columns: 1fr 1fr; }
+}
+
 /* --------------------- 4) Nominal/Real Simulation ----------------------- */
 .sim__controls { display: grid; gap: 22px; margin-bottom: 24px; }
 .slider { display: block; }
@@ -795,6 +845,7 @@ input[type="range"]::-moz-range-thumb {
           <a href="#was-ist">Grundlagen</a>
           <a href="#wertschoepfung">Wertschöpfung</a>
           <a href="#berechnungsarten">3 Wege</a>
+          <a href="#groessen">BIP &amp; BNE</a>
           <a href="#nominal-real">Nominal/Real</a>
           <a href="#grenzen">Grenzen</a>
           <a href="#quiz">Quiz</a>
@@ -935,10 +986,64 @@ input[type="range"]::-moz-range-thumb {
         <p class="punchline">In unserem Beispiel ergeben alle drei Wege 100 Mrd. € – genau das ist das Bruttoinlandsprodukt.</p>
       </section>
 
-      <!-- ===================== 4) NOMINAL VS. REAL ===================== -->
-      <section class="section" id="nominal-real">
+      <!-- ===================== 4) BIP, BNE & WEITERE GRÖSSEN ===================== -->
+      <section class="section" id="groessen">
         <div class="section__head">
           <span class="step">04</span>
+          <h2>BIP, BNE &amp; weitere Größen</h2>
+        </div>
+        <p class="text">
+          Neben dem BIP gibt es ein paar verwandte Größen. Sie bauen aufeinander
+          auf und sagen jeweils etwas anderes über die Wirtschaft aus.
+        </p>
+
+        <!-- BIP vs. BNE: Inland gegen Inländer -->
+        <div class="vs">
+          <article class="vs__card">
+            <span class="vs__tag">BIP</span>
+            <h3>Bruttoinlandsprodukt</h3>
+            <p class="vs__concept">Inlandskonzept · „wo?"</p>
+            <p class="vs__desc">Alles, was <strong>im Inland</strong> erzeugt wird – egal von wem.</p>
+            <p class="vs__ex">Ein polnischer Pendler, der in Hamburg arbeitet, zählt zum deutschen BIP.</p>
+          </article>
+          <article class="vs__card">
+            <span class="vs__tag">BNE</span>
+            <h3>Bruttonationaleinkommen</h3>
+            <p class="vs__concept">Inländerkonzept · „von wem?"</p>
+            <p class="vs__desc">Alles, was von <strong>Inländern</strong> erzeugt wird – egal wo.</p>
+            <p class="vs__ex">Eine Deutsche, die in der Schweiz arbeitet, zählt zum deutschen BNE.</p>
+          </article>
+        </div>
+
+        <!-- Einkommens-Treppe: BIP -> BNE -> NNE -> Volkseinkommen -->
+        <p class="hint-tap">Und so hängen die Größen zusammen:</p>
+        <div class="stairs">
+          <div class="stair">
+            <p class="stair__name"><b>BIP</b> Bruttoinlandsprodukt</p>
+            <p class="stair__desc">Wert aller im Inland erzeugten Güter und Dienstleistungen.</p>
+          </div>
+          <p class="stair__op">+ Saldo der Primäreinkommen aus dem Ausland</p>
+          <div class="stair">
+            <p class="stair__name"><b>BNE</b> Bruttonationaleinkommen</p>
+            <p class="stair__desc">Wie das BIP, aber nach Inländern statt nach Inland gerechnet.</p>
+          </div>
+          <p class="stair__op">− Abschreibungen</p>
+          <div class="stair">
+            <p class="stair__name"><b>NNE</b> Nettonationaleinkommen</p>
+            <p class="stair__desc">Ohne den Wertverlust von Maschinen und Gebäuden (die Abschreibungen).</p>
+          </div>
+          <p class="stair__op">− indirekte Steuern + Subventionen</p>
+          <div class="stair stair--goal">
+            <p class="stair__name"><b>Volkseinkommen</b></p>
+            <p class="stair__desc">Was am Ende als Einkommen bei Arbeitnehmern und Unternehmen ankommt.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== 5) NOMINAL VS. REAL ===================== -->
+      <section class="section" id="nominal-real">
+        <div class="section__head">
+          <span class="step">05</span>
           <h2>Nominal vs. real</h2>
         </div>
         <p class="text">
@@ -992,7 +1097,7 @@ input[type="range"]::-moz-range-thumb {
       <!-- ===================== 5) GRENZEN DES BIP ===================== -->
       <section class="section" id="grenzen">
         <div class="section__head">
-          <span class="step">05</span>
+          <span class="step">06</span>
           <h2>Grenzen des BIP – misst es Wohlstand?</h2>
         </div>
         <p class="text">
@@ -1015,18 +1120,18 @@ input[type="range"]::-moz-range-thumb {
       <!-- ===================== 6) MINI-QUIZ ===================== -->
       <section class="section" id="quiz">
         <div class="section__head">
-          <span class="step">06</span>
+          <span class="step">07</span>
           <h2>Mini-Quiz</h2>
         </div>
         <p class="text">
-          16 Fragen quer durch das Thema, mit sofortigem Feedback und kurzer
+          18 Fragen quer durch das Thema, mit sofortigem Feedback und kurzer
           Erklärung. Mal sehen, was hängen geblieben ist.
         </p>
 
         <div class="quiz" id="quizList"></div>
 
         <div class="quiz__bar">
-          <p class="quiz__score" id="quizScore" aria-live="polite">0 von 16 richtig</p>
+          <p class="quiz__score" id="quizScore" aria-live="polite">0 von 18 richtig</p>
           <button class="btn btn--ghost" id="quizReset" type="button">Nochmal</button>
         </div>
       </section>
@@ -1685,6 +1790,28 @@ input[type="range"]::-moz-range-thumb {
         correct: 0,
         exp: "Das Sechseck erweitert das Viereck um Umweltschutz und gerechte Verteilung.",
       },
+      {
+        q: "Wie kommt man vom BNE zum Nettonationaleinkommen (NNE)?",
+        options: [
+          "Man zieht die Abschreibungen ab.",
+          "Man addiert die Exporte.",
+          "Man zieht die Löhne ab.",
+          "Man addiert die Inflation.",
+        ],
+        correct: 0,
+        exp: "NNE = BNE − Abschreibungen (der Wertverlust von Maschinen und Gebäuden).",
+      },
+      {
+        q: "Was beschreibt das Volkseinkommen?",
+        options: [
+          "Was als Einkommen bei Arbeitnehmern und Unternehmen ankommt.",
+          "Den Wert aller Exporte eines Jahres.",
+          "Die gesamten Ausgaben des Staates.",
+          "Das BIP zu aktuellen Marktpreisen.",
+        ],
+        correct: 0,
+        exp: "Volkseinkommen = NNE − indirekte Steuern + Subventionen: die Einkommen aus Arbeit und Unternehmen.",
+      },
     ];
 
     let score = 0;
@@ -1797,6 +1924,8 @@ input[type="range"]::-moz-range-thumb {
     const terms = [
       { term: "BIP", def: "Bruttoinlandsprodukt: der Wert aller Güter und Dienstleistungen, die in einem Jahr im Inland erzeugt werden (Inlandskonzept)." },
       { term: "BNE", def: "Bruttonationaleinkommen: der Wert aller Güter und Dienstleistungen, die von Inländern erzeugt werden – im In- und Ausland (Inländerkonzept). Früher: Bruttosozialprodukt." },
+      { term: "NNE", def: "Nettonationaleinkommen: das BNE abzüglich der Abschreibungen, also des Wertverlusts von Maschinen und Gebäuden." },
+      { term: "Volkseinkommen", def: "Was als Einkommen bei Arbeitnehmern (Löhne) und Unternehmen (Gewinne) ankommt: NNE minus indirekte Steuern plus Subventionen." },
       { term: "nominal", def: "Zu aktuellen Marktpreisen gerechnet. Preissteigerungen sind enthalten." },
       { term: "real", def: "Preisbereinigt, zu den Preisen eines Basisjahres. Die Inflation ist herausgerechnet – deshalb aussagekräftiger." },
       { term: "Wertschöpfung", def: "Leistung minus Vorleistung: der Mehrwert, der auf einer Produktionsstufe neu geschaffen wird." },

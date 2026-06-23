@@ -38,6 +38,7 @@
           <a href="#was-ist">Grundlagen</a>
           <a href="#wertschoepfung">Wertschöpfung</a>
           <a href="#berechnungsarten">3 Wege</a>
+          <a href="#groessen">BIP &amp; BNE</a>
           <a href="#nominal-real">Nominal/Real</a>
           <a href="#grenzen">Grenzen</a>
           <a href="#quiz">Quiz</a>
@@ -178,10 +179,64 @@
         <p class="punchline">In unserem Beispiel ergeben alle drei Wege 100 Mrd. € – genau das ist das Bruttoinlandsprodukt.</p>
       </section>
 
-      <!-- ===================== 4) NOMINAL VS. REAL ===================== -->
-      <section class="section" id="nominal-real">
+      <!-- ===================== 4) BIP, BNE & WEITERE GRÖSSEN ===================== -->
+      <section class="section" id="groessen">
         <div class="section__head">
           <span class="step">04</span>
+          <h2>BIP, BNE &amp; weitere Größen</h2>
+        </div>
+        <p class="text">
+          Neben dem BIP gibt es ein paar verwandte Größen. Sie bauen aufeinander
+          auf und sagen jeweils etwas anderes über die Wirtschaft aus.
+        </p>
+
+        <!-- BIP vs. BNE: Inland gegen Inländer -->
+        <div class="vs">
+          <article class="vs__card">
+            <span class="vs__tag">BIP</span>
+            <h3>Bruttoinlandsprodukt</h3>
+            <p class="vs__concept">Inlandskonzept · „wo?"</p>
+            <p class="vs__desc">Alles, was <strong>im Inland</strong> erzeugt wird – egal von wem.</p>
+            <p class="vs__ex">Ein polnischer Pendler, der in Hamburg arbeitet, zählt zum deutschen BIP.</p>
+          </article>
+          <article class="vs__card">
+            <span class="vs__tag">BNE</span>
+            <h3>Bruttonationaleinkommen</h3>
+            <p class="vs__concept">Inländerkonzept · „von wem?"</p>
+            <p class="vs__desc">Alles, was von <strong>Inländern</strong> erzeugt wird – egal wo.</p>
+            <p class="vs__ex">Eine Deutsche, die in der Schweiz arbeitet, zählt zum deutschen BNE.</p>
+          </article>
+        </div>
+
+        <!-- Einkommens-Treppe: BIP -> BNE -> NNE -> Volkseinkommen -->
+        <p class="hint-tap">Und so hängen die Größen zusammen:</p>
+        <div class="stairs">
+          <div class="stair">
+            <p class="stair__name"><b>BIP</b> Bruttoinlandsprodukt</p>
+            <p class="stair__desc">Wert aller im Inland erzeugten Güter und Dienstleistungen.</p>
+          </div>
+          <p class="stair__op">+ Saldo der Primäreinkommen aus dem Ausland</p>
+          <div class="stair">
+            <p class="stair__name"><b>BNE</b> Bruttonationaleinkommen</p>
+            <p class="stair__desc">Wie das BIP, aber nach Inländern statt nach Inland gerechnet.</p>
+          </div>
+          <p class="stair__op">− Abschreibungen</p>
+          <div class="stair">
+            <p class="stair__name"><b>NNE</b> Nettonationaleinkommen</p>
+            <p class="stair__desc">Ohne den Wertverlust von Maschinen und Gebäuden (die Abschreibungen).</p>
+          </div>
+          <p class="stair__op">− indirekte Steuern + Subventionen</p>
+          <div class="stair stair--goal">
+            <p class="stair__name"><b>Volkseinkommen</b></p>
+            <p class="stair__desc">Was am Ende als Einkommen bei Arbeitnehmern und Unternehmen ankommt.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== 5) NOMINAL VS. REAL ===================== -->
+      <section class="section" id="nominal-real">
+        <div class="section__head">
+          <span class="step">05</span>
           <h2>Nominal vs. real</h2>
         </div>
         <p class="text">
@@ -235,7 +290,7 @@
       <!-- ===================== 5) GRENZEN DES BIP ===================== -->
       <section class="section" id="grenzen">
         <div class="section__head">
-          <span class="step">05</span>
+          <span class="step">06</span>
           <h2>Grenzen des BIP – misst es Wohlstand?</h2>
         </div>
         <p class="text">
@@ -258,18 +313,18 @@
       <!-- ===================== 6) MINI-QUIZ ===================== -->
       <section class="section" id="quiz">
         <div class="section__head">
-          <span class="step">06</span>
+          <span class="step">07</span>
           <h2>Mini-Quiz</h2>
         </div>
         <p class="text">
-          16 Fragen quer durch das Thema, mit sofortigem Feedback und kurzer
+          18 Fragen quer durch das Thema, mit sofortigem Feedback und kurzer
           Erklärung. Mal sehen, was hängen geblieben ist.
         </p>
 
         <div class="quiz" id="quizList"></div>
 
         <div class="quiz__bar">
-          <p class="quiz__score" id="quizScore" aria-live="polite">0 von 16 richtig</p>
+          <p class="quiz__score" id="quizScore" aria-live="polite">0 von 18 richtig</p>
           <button class="btn btn--ghost" id="quizReset" type="button">Nochmal</button>
         </div>
       </section>
