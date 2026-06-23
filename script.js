@@ -489,17 +489,6 @@
         exp: "Faustregel: real ≈ nominal − Inflation = 9 − 4 = 5 %.",
       },
       {
-        q: "Was erhöht das Bruttonationaleinkommen?",
-        options: [
-          "Ein inländischer Autohersteller produziert 10.000 PKW mehr als im Vorjahr.",
-          "Die Brotpreise steigen um 5 %.",
-          "Ein ausländischer Konzern produziert mehr in seinem Heimatland.",
-          "Der Staat erhöht die Mehrwertsteuer.",
-        ],
-        correct: 0,
-        exp: "Mehr echte Produktion durch Inländer erhöht das BNE. Reine Preissteigerungen zählen real nicht.",
-      },
-      {
         q: "Wo liegt ein wirtschaftspolitischer Zielkonflikt vor?",
         options: [
           "Bei steigender Beschäftigung erhöht sich das Preisniveau.",
@@ -564,17 +553,6 @@
         ],
         correct: 0,
         exp: "BIP = Inlandskonzept (im Inland erzeugt), BNE = Inländerkonzept (von Inländern erzeugt, egal wo).",
-      },
-      {
-        q: "Was beschreibt das nominale BIP?",
-        options: [
-          "Die Produktion bewertet zu den aktuellen Marktpreisen.",
-          "Die Produktion zu den Preisen eines festen Basisjahres.",
-          "Das BIP ohne den Staatssektor.",
-          "Das BIP geteilt durch die Einwohnerzahl.",
-        ],
-        correct: 0,
-        exp: "Nominal = zu aktuellen Preisen. Preissteigerungen sind enthalten und können das BIP erhöhen.",
       },
       {
         q: "Warum ist das reale BIP aussagekräftiger als das nominale?",
