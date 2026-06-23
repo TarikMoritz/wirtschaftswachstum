@@ -498,6 +498,116 @@
         correct: 0,
         exp: "Klassischer Konflikt: mehr Beschäftigung kann die Preise steigen lassen – Beschäftigung gegen Preisstabilität.",
       },
+      {
+        q: "Wie berechnet man die Wertschöpfung?",
+        options: [
+          "Leistung minus Vorleistung.",
+          "Leistung plus Vorleistung.",
+          "Umsatz plus Gewinn.",
+          "Lohn minus Steuern.",
+        ],
+        correct: 0,
+        exp: "Wertschöpfung = Leistung (Wert des Produkts) minus Vorleistung (eingekaufte Güter).",
+      },
+      {
+        q: "Was ist eine Vorleistung?",
+        options: [
+          "Das Holz, das ein Schreiner einkauft und verarbeitet.",
+          "Der Lohn der Beschäftigten in der Schreinerei.",
+          "Die fertigen Möbel, die verkauft werden.",
+          "Der Gewinn des Schreiners am Jahresende.",
+        ],
+        correct: 0,
+        exp: "Vorleistungen sind eingekaufte Güter und Dienste, die im Produktionsprozess verbraucht werden – wie das Holz.",
+      },
+      {
+        q: "Auf welchen drei Wegen lässt sich das BIP berechnen?",
+        options: [
+          "Entstehung, Verwendung und Verteilung.",
+          "Angebot, Nachfrage und Gleichgewicht.",
+          "Import, Export und Konsum.",
+          "Lohn, Zins und Gewinn.",
+        ],
+        correct: 0,
+        exp: "Entstehungs-, Verwendungs- und Verteilungsrechnung führen alle zum gleichen Ergebnis.",
+      },
+      {
+        q: "Welche Größen gehören zur Verwendungsrechnung des BIP?",
+        options: [
+          "Konsum, Investitionen, Staatsausgaben und der Außenbeitrag (Exporte minus Importe).",
+          "Löhne, Gewinne und Abschreibungen.",
+          "Produktionswert minus Vorleistungen.",
+          "Indirekte Steuern minus Subventionen.",
+        ],
+        correct: 0,
+        exp: "Die Verwendungsrechnung fragt, wofür das BIP genutzt wird: Konsum, Investitionen, Staat und Außenbeitrag.",
+      },
+      {
+        q: "Worin unterscheiden sich BIP und BNE?",
+        options: [
+          "Das BIP misst die Leistung im Inland, das BNE die Leistung der Inländer (auch im Ausland).",
+          "Das BIP ist immer nominal, das BNE immer real.",
+          "Das BIP zählt nur Waren, das BNE nur Dienstleistungen.",
+          "Es gibt keinen Unterschied, beide sind gleich.",
+        ],
+        correct: 0,
+        exp: "BIP = Inlandskonzept (im Inland erzeugt), BNE = Inländerkonzept (von Inländern erzeugt, egal wo).",
+      },
+      {
+        q: "Was beschreibt das nominale BIP?",
+        options: [
+          "Die Produktion bewertet zu den aktuellen Marktpreisen.",
+          "Die Produktion zu den Preisen eines festen Basisjahres.",
+          "Das BIP ohne den Staatssektor.",
+          "Das BIP geteilt durch die Einwohnerzahl.",
+        ],
+        correct: 0,
+        exp: "Nominal = zu aktuellen Preisen. Preissteigerungen sind enthalten und können das BIP erhöhen.",
+      },
+      {
+        q: "Warum ist das reale BIP aussagekräftiger als das nominale?",
+        options: [
+          "Weil die Preissteigerung (Inflation) herausgerechnet ist.",
+          "Weil es immer höher ausfällt.",
+          "Weil es die Importe ausschließt.",
+          "Weil es die Bevölkerung mitzählt.",
+        ],
+        correct: 0,
+        exp: "Real ist preisbereinigt – es zeigt echtes Mengenwachstum statt nur höherer Preise.",
+      },
+      {
+        q: "Was wird im BIP NICHT erfasst?",
+        options: [
+          "Unbezahlte Hausarbeit und Ehrenamt.",
+          "Die Produktion der Industriebetriebe.",
+          "Die Konsumausgaben der Haushalte.",
+          "Die Investitionen der Unternehmen.",
+        ],
+        correct: 0,
+        exp: "Unbezahlte Arbeit hat keinen Marktpreis und taucht im BIP nicht auf – eine wichtige Grenze des BIP.",
+      },
+      {
+        q: "Was meint qualitatives Wachstum?",
+        options: [
+          "Eine Verbesserung der Lebensbedingungen, nicht nur mehr Produktion.",
+          "Eine reine Steigerung der produzierten Menge.",
+          "Wachstum nur in der Industrie.",
+          "Wachstum ganz ohne Inflation.",
+        ],
+        correct: 0,
+        exp: "Quantitativ = mehr. Qualitativ = besser (z. B. Bildung, Gesundheit, Umwelt).",
+      },
+      {
+        q: "Welche Ziele kommen beim Magischen Sechseck zum Magischen Viereck hinzu?",
+        options: [
+          "Umweltschutz und eine gerechte Einkommens- und Vermögensverteilung.",
+          "Niedrige Steuern und hohe Exporte.",
+          "Mehr Konsum und mehr Investitionen.",
+          "Stabile Preise und hohe Beschäftigung.",
+        ],
+        correct: 0,
+        exp: "Das Sechseck erweitert das Viereck um Umweltschutz und gerechte Verteilung.",
+      },
     ];
 
     let score = 0;
@@ -584,8 +694,8 @@
       // Alle Fragen beantwortet: motivierende Auswertung
       let msg;
       if (score === total) msg = "Perfekt – sitzt alles!";
-      else if (score >= 4) msg = "Stark, das meiste sitzt.";
-      else if (score >= 2) msg = "Solide Basis. Schau dir die Erklärungen oben nochmal an.";
+      else if (score >= total * 0.8) msg = "Stark, das meiste sitzt.";
+      else if (score >= total * 0.5) msg = "Solide Basis. Schau dir die Erklärungen oben nochmal an.";
       else msg = "Kein Stress – geh die Abschnitte nochmal durch und probier es erneut.";
       scoreEl.textContent = `${score} von ${total} richtig. ${msg}`;
       scoreEl.classList.add("is-done");
@@ -615,6 +725,7 @@
       { term: "Wertschöpfung", def: "Leistung minus Vorleistung: der Mehrwert, der auf einer Produktionsstufe neu geschaffen wird." },
       { term: "Vorleistung", def: "Eingekaufte Güter und Dienste, die im Produktionsprozess verbraucht werden." },
       { term: "Magisches Viereck", def: "Vier gleichzeitig angestrebte Ziele der Wirtschaftspolitik: Preisstabilität, hoher Beschäftigungsstand, außenwirtschaftliches Gleichgewicht und stetiges, angemessenes Wachstum. Magisch heißt es, weil schwer alle zugleich erreichbar sind." },
+      { term: "Magisches Sechseck", def: "Erweiterung des Magischen Vierecks um zwei Ziele: Umweltschutz (Erhalt der natürlichen Lebensgrundlagen) und eine gerechte Einkommens- und Vermögensverteilung." },
     ];
 
     wrap.innerHTML = terms

@@ -212,6 +212,19 @@ a { color: var(--accent); }
   border-left: 4px solid var(--accent);
 }
 
+/* Relevanz-/Hinweis-Kasten (anregender Zusatz) */
+.callout {
+  background: #eaf0ff;
+  border-left: 4px solid var(--accent);
+  border-radius: var(--radius-sm);
+  padding: 15px 18px;
+  margin: 0 0 18px;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--ink);
+}
+.callout strong { font-family: var(--font-display); }
+
 /* ----------------------------- Buttons ---------------------------------- */
 .btn {
   display: inline-flex;
