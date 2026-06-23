@@ -65,11 +65,14 @@
     const hint = $("#heroChartHint");
     if (!host) return;
 
+    // Nominales BIP Deutschland in Mrd. Euro (Quelle: Statistisches Bundesamt).
+    // Werte 2023-2025 nach der VGR-Revision (Stand 2026).
     const data = [
       [2009, 2446], [2010, 2564], [2011, 2694], [2012, 2745],
       [2013, 2811], [2014, 2927], [2015, 3026], [2016, 3135],
       [2017, 3267], [2018, 3368], [2019, 3473], [2020, 3368],
-      [2021, 3571],
+      [2021, 3571], [2022, 3877], [2023, 4219], [2024, 4329],
+      [2025, 4470],
     ];
 
     // Zeichenfläche
@@ -77,7 +80,7 @@
     const padL = 46, padR = 16, padT = 24, padB = 30;
     const plotW = W - padL - padR;
     const plotH = H - padT - padB;
-    const yMin = 2300, yMax = 3650;
+    const yMin = 2300, yMax = 4600;
     const n = data.length;
 
     const x = (i) => padL + (i / (n - 1)) * plotW;
@@ -91,7 +94,7 @@
 
     // Y-Gitterlinien
     let grid = "";
-    [2400, 2800, 3200, 3600].forEach((v) => {
+    [2500, 3000, 3500, 4000, 4500].forEach((v) => {
       const yy = y(v).toFixed(1);
       grid += `<line class="chart-grid" x1="${padL}" y1="${yy}" x2="${W - padR}" y2="${yy}"/>`;
       grid += `<text class="chart-axis" x="${padL - 8}" y="${(+yy + 4).toFixed(1)}" text-anchor="end">${v}</text>`;
@@ -119,7 +122,7 @@
     const anno = `<text class="chart-anno" x="${x(ci).toFixed(1)}" y="${(y(3368) + 22).toFixed(1)}" text-anchor="middle">Corona</text>`;
 
     host.innerHTML = `
-      <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Liniendiagramm des nominalen BIP von 2009 bis 2021, mit einem Rückgang 2020 durch Corona.">
+      <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Liniendiagramm des nominalen BIP von 2009 bis 2025, mit einem Rückgang 2020 durch Corona.">
         <defs>
           <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stop-color="#2d5bff" stop-opacity="0.18"/>
@@ -270,45 +273,46 @@
     const wrap = $("#methods");
     if (!wrap) return;
 
+    // Ein durchgängiges Zahlenbeispiel: alle drei Wege ergeben 100 Mrd. €.
     const methods = [
       {
         tag: "Entstehung",
         name: "Wo wird es erarbeitet?",
         color: "var(--entstehung)",
-        formula: [
-          "Produktionswert",
-          "− Vorleistungen",
-          "= Bruttowertschöpfung",
-          "+ Gütersteuern",
-          "− Gütersubventionen",
-          "= Bruttoinlandsprodukt",
+        rows: [
+          { t: "Produktionswert", v: "160" },
+          { t: "− Vorleistungen", v: "− 70" },
+          { t: "= Bruttowertschöpfung", v: "90" },
+          { t: "+ Gütersteuern", v: "+ 12" },
+          { t: "− Gütersubventionen", v: "− 2" },
+          { t: "= Bruttoinlandsprodukt", v: "100", total: true },
         ],
       },
       {
         tag: "Verwendung",
         name: "Wofür wird es genutzt?",
         color: "var(--verwendung)",
-        formula: [
-          "Private Konsumausgaben",
-          "+ Konsumausgaben des Staates",
-          "+ Investitionen",
-          "+ Exporte",
-          "− Importe",
-          "= Bruttoinlandsprodukt",
+        rows: [
+          { t: "Private Konsumausgaben", v: "55" },
+          { t: "+ Konsumausgaben des Staates", v: "+ 20" },
+          { t: "+ Investitionen", v: "+ 20" },
+          { t: "+ Exporte", v: "+ 50" },
+          { t: "− Importe", v: "− 45" },
+          { t: "= Bruttoinlandsprodukt", v: "100", total: true },
         ],
       },
       {
         tag: "Verteilung",
         name: "Wie wird es verteilt?",
         color: "var(--verteilung)",
-        formula: [
-          "Löhne und Gehälter",
-          "+ Unternehmens- und Vermögenseinkommen",
-          "+ indirekte Steuern",
-          "− Subventionen",
-          "+ Abschreibungen",
-          "− Saldo der Einkommen aus dem Ausland",
-          "= Bruttoinlandsprodukt",
+        rows: [
+          { t: "Löhne und Gehälter", v: "55" },
+          { t: "+ Unternehmens- und Vermögenseinkommen", v: "+ 25" },
+          { t: "+ indirekte Steuern", v: "+ 12" },
+          { t: "− Subventionen", v: "− 2" },
+          { t: "+ Abschreibungen", v: "+ 15" },
+          { t: "− Saldo der Einkommen aus dem Ausland", v: "− 5" },
+          { t: "= Bruttoinlandsprodukt", v: "100", total: true },
         ],
       },
     ];
@@ -323,7 +327,15 @@
             <svg class="method__chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
           </button>
           <div class="method__body" id="m-body-${i}">
-            <div class="method__formula">${m.formula.join("<br />")}</div>
+            <dl class="calcrows">
+              ${m.rows
+                .map(
+                  (r) =>
+                    `<div class="calcrow${r.total ? " is-total" : ""}"><dt>${r.t}</dt><dd>${r.v}</dd></div>`
+                )
+                .join("")}
+            </dl>
+            <p class="method__note">Vereinfachtes Beispiel in Mrd. €.</p>
           </div>
         </div>`
       )

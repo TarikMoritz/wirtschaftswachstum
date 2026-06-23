@@ -499,14 +499,35 @@ a { color: var(--accent); }
 .method.is-open .method__chev { transform: rotate(90deg); }
 .method__body { display: none; padding: 0 18px 18px; }
 .method.is-open .method__body { display: block; }
-.method__formula {
+/* Rechnung mit Zahlen (Begriff links, Wert rechts) */
+.calcrows {
+  margin: 0;
   font-family: var(--font-mono);
-  font-size: 14px;
-  line-height: 1.7;
+  font-size: 13.5px;
   background: var(--bg);
   border-radius: var(--radius-sm);
-  padding: 14px 16px;
+  padding: 8px 16px;
 }
+.calcrow {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--line);
+}
+.calcrow:last-child { border-bottom: none; }
+.calcrow dt { margin: 0; color: var(--ink); }
+.calcrow dd { margin: 0; font-variant-numeric: tabular-nums; color: var(--muted); }
+.calcrow.is-total {
+  margin-top: 4px;
+  padding-top: 10px;
+  border-top: 2px solid var(--m-color, var(--accent));
+  font-weight: 600;
+}
+.calcrow.is-total dt,
+.calcrow.is-total dd { color: var(--m-color, var(--accent)); }
+.method__note { font-size: 12px; color: var(--muted); margin: 10px 2px 0; }
 
 /* --------------------- 4) Nominal/Real Simulation ----------------------- */
 .sim__controls { display: grid; gap: 22px; margin-bottom: 24px; }
